@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Lexicon Dictionary</string>
+    <string name="txt_enterText">Tap to enter text</string>
+</resources>

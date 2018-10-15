@@ -97,8 +97,12 @@
     </android.support.constraint.ConstraintLayout>
 
     <ListView
+        android:id="@+id/historyList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="3dp"
         android:layout_weight="7"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />

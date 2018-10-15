@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_weight="7"
         android:orientation="vertical">
 
@@ -23,9 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="2dp"
             android:gravity="start"
             android:textAlignment="textStart"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -33,8 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="2dp"
             android:gravity="start"
-            android:textAlignment="textStart" />
+            android:textAlignment="textStart"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/spacing2"
@@ -48,11 +51,15 @@
         android:id="@+id/favoriteButton"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="18dp"
         android:layout_weight="1"
         android:adjustViewBounds="true"
         android:background="@android:color/white"
-        android:padding="3dp"
+        android:padding="2dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/emptyStar_button" />
+        app:srcCompat="@drawable/emptystar_button" />
 
 </LinearLayout>

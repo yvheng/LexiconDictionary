@@ -18,16 +18,19 @@ public class HistoryListAdapter extends ArrayAdapter {
     //to reference the Activity
     private final Activity context;
     //to store the list of original word
-    private final String[] originalWordArray;
+    private String[] originalWordArray;
     //to store the list of translated word
-    private final String[] translatedWordArray;
+    private String[] translatedWordArray;
+    //to store the list of favorite word
+    private boolean[] favoriteWord;
 
-    public HistoryListAdapter(Activity context, String[] originalWordArray, String[] translatedWordArray) {
+    public HistoryListAdapter(Activity context, String[] originalWordArray, String[] translatedWordArray, boolean[] favoriteWord) {
         super(context, R.layout.history_list, originalWordArray);
 
         this.context = context;
         this.originalWordArray = originalWordArray;
         this.translatedWordArray = translatedWordArray;
+        this.favoriteWord = favoriteWord;
     }
 
     public View getView(int position, View view, ViewGroup parent) {

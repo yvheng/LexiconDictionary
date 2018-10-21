@@ -13,10 +13,13 @@ import com.example.family.lexicondictionary.Adapter.HistoryListAdapter;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    //Add data in the array from database, can be done in onCreate with methods
-    String[] originalWordArray = {"Hello","Yv Heng"};
-    String[] translatedWordArray = {"Hi","Yih Hern"};
-    String[] languages = {"English", "Malay", "Mandarin"};
+    //Data in the array will retrieve from database, can be done in onCreate with methods
+    String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose
+
+    //SharedPreferences, store all history from that specific user
+    String[] originalWordArray; //to be added later
+    String[] translatedWordArray;
+    boolean[] favoriteWord;
 
     ListView listView;
     Spinner translateFromList, translateToList;
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         HistoryListAdapter historyListAdapter = new HistoryListAdapter(this,
-                originalWordArray, translatedWordArray);
+                originalWordArray, translatedWordArray, favoriteWord);
 
         translateFromList = (Spinner)findViewById(R.id.translateFrom);
         translateToList = (Spinner)findViewById(R.id.translateTo) ;

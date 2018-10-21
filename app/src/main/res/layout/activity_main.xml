@@ -55,7 +55,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/editTxtInput"
+        android:id="@+id/originalWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -65,50 +65,24 @@
         android:inputType="text|textAutoCorrect"
         android:singleLine="false"
         android:textAlignment="textStart"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="81dp" />
 
-    <android.support.constraint.ConstraintLayout
+    <TextView
+        android:id="@+id/translatedWord"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/camera"
-            android:layout_width="60dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/white"
-            android:padding="3dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/camera_button" />
-
-        <ImageButton
-            android:id="@+id/recorder"
-            android:layout_width="60dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:background="@android:color/white"
-            android:padding="5dp"
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/recorder_button"
-            app:layout_constraintLeft_toRightOf="@+id/camera"
-            android:layout_marginLeft="8dp"
-            app:layout_constraintHorizontal_bias="0.0" />
-
-    </android.support.constraint.ConstraintLayout>
+        android:gravity="start"
+        android:textAlignment="textStart"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
 
     <ListView
         android:id="@+id/historyList"

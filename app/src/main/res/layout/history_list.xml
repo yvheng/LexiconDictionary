@@ -22,10 +22,11 @@
             android:id="@+id/originalWord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="2dp"
+            android:layout_weight="1"
             android:gravity="start"
             android:textAlignment="textStart"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -33,10 +34,11 @@
             android:id="@+id/translatedWord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="2dp"
+            android:layout_weight="1"
             android:gravity="start"
             android:textAlignment="textStart"
+            android:textColor="@android:color/darker_gray"
             android:textSize="16sp" />
 
         <TextView

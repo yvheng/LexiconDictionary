@@ -36,6 +36,7 @@
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:background="@android:color/white"
+            android:onClick="exchange"
             android:padding="7dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/exchange_button" />

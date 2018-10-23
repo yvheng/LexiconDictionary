@@ -1,37 +1,30 @@
 package com.example.family.lexicondictionary;
 
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.family.lexicondictionary.Adapter.HistoryListAdapter;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
-    //Data in the array will retrieve from database, can be done in onCreate with methods
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose
 
     //SharedPreferences, store all history from that specific user
-    String[] originalWordArray; //to be added later
-    String[] translatedWordArray;
-    boolean[] favoriteWord;
+    String[] originalWordArray = {"Hello","YH"}; //to be added later
+    String[] translatedWordArray = {"Hi", "Yv Heng"};
+    boolean[] favoriteWord = {false, false};
 
     TextView textViewTranslatedWord;
 
+    Spinner translateFromList, translateToList, temp;
+
     ListView listView;
-    Spinner translateFromList= (Spinner)findViewById(R.id.translateFrom),
-            translateToList= (Spinner)findViewById(R.id.translateTo);
-    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-            android.R.layout.simple_spinner_dropdown_item, languages);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
 
         HistoryListAdapter historyListAdapter = new HistoryListAdapter(this,
                 originalWordArray, translatedWordArray, favoriteWord);
+
+        translateFromList= (Spinner)findViewById(R.id.translateFrom);
+        translateToList= (Spinner)findViewById(R.id.translateTo);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, languages);
 
         translateFromList.setAdapter(spinnerAdapter);
         translateToList.setAdapter(spinnerAdapter);
@@ -69,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void exchange(View v){
-        Spinner temp= (Spinner)findViewById(R.id.translateFrom);
+        temp= (Spinner)findViewById(R.id.translateFrom);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, languages);
         temp.setAdapter(spinnerAdapter);
         temp.setSelection(translateFromList.getSelectedItemPosition());
         translateFromList.setSelection(translateToList.getSelectedItemPosition());

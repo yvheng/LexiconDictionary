@@ -5,16 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.family.lexicondictionary.R;
 
 /**
- * Created by Yv Heng on 15/10/2018.
+ * Created by Family on 23/10/2018.
  */
 
-public class HistoryListAdapter extends ArrayAdapter {
+public class HistoryListAdapter extends ArrayAdapter{
     //to reference the Activity
     private final Activity context;
     //to store the list of original word
@@ -47,5 +46,4 @@ public class HistoryListAdapter extends ArrayAdapter {
 
         return rowView;
     }
-
 }

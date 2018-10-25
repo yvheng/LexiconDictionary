@@ -1,14 +1,20 @@
 <resources>
     <string name="app_name">Lexicon Dictionary</string>
     <string name="txt_enterText">Tap to enter text</string>
+    <string name="txt_noImage">No image added.</string>
 
     <string name="title_activity_add">Adding new entry</string>
+    <string name="title_addNewEntry">Adding new Entry</string>
 
     <string name="text_original">Original</string>
     <string name="text_originalWord">Original word</string>
-    <string name="title_addNewEntry">Adding new Entry</string>
     <string name="text_translated">Translated</string>
     <string name="text_translatedWord">Translated word</string>
     <string name="text_language">Language</string>
     <string name="text_target">Target</string>
+    <string name="text_photo">Photo:</string>
+
+    <string name="button_add">Add</string>
+    <string name="text_pronunciation">Pronunciation:</string>
+    <string name="txt_noVoice">No pronunciation added.</string>
 </resources>

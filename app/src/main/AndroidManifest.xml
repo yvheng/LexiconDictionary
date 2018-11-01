@@ -28,8 +28,8 @@
         <activity
             android:name=".AddActivity"
             android:label="@string/title_activity_add"
-            android:windowSoftInputMode="stateHidden">
-        </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity android:name=".DisplayActivity"></activity>
     </application>
 
 </manifest>

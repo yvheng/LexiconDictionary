@@ -2,6 +2,7 @@
     <string name="app_name">Lexicon Dictionary</string>
     <string name="txt_enterText">Tap to enter text</string>
     <string name="txt_noImage">No image added.</string>
+    <string name="txt_noVoice">No pronunciation added.</string>
 
     <string name="title_activity_add">Adding new entry</string>
     <string name="title_addNewEntry">Adding new Entry</string>
@@ -13,8 +14,11 @@
     <string name="text_language">Language</string>
     <string name="text_target">Target</string>
     <string name="text_photo">Photo:</string>
+    <string name="text_sentiment">Sentiment Strength</string>
+    <string name="text_negative">Negative</string>
+    <string name="text_positive">Positive</string>
+    <string name="text_rating">Accuracy Rating</string>
+    <string name="text_pronunciation">Pronunciation:</string>
 
     <string name="button_add">Add</string>
-    <string name="text_pronunciation">Pronunciation:</string>
-    <string name="txt_noVoice">No pronunciation added.</string>
 </resources>

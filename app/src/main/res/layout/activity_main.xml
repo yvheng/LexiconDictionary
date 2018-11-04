@@ -57,8 +57,8 @@
     <EditText
         android:id="@+id/originalWord"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:ems="10"
         android:gravity="start"
         android:hint="@string/txt_enterText"
@@ -73,12 +73,12 @@
     <TextView
         android:id="@+id/translatedWord"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="start"
         android:textAlignment="textStart"
         android:textColor="@android:color/darker_gray"
@@ -91,7 +91,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="3dp"
-        android:layout_weight="7"
+        android:layout_weight="5"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
 </LinearLayout>

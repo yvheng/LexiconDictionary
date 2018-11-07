@@ -6,19 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.example.family.lexicondictionary.DisplayActivity"
     android:orientation="vertical"
-    android:weightSum="10">
+    android:weightSum="12">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
         android:layout_marginTop="3dp"
-        android:weightSum="7">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <Spinner
             android:id="@+id/translateFrom"
-            android:layout_width="0dp"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="2dp"
@@ -26,23 +25,29 @@
             android:layout_marginTop="2dp"
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown"
-            android:layout_weight="3" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/exchange"
+            android:layout_toStartOf="@id/exchange"
+            android:layout_centerVertical="true"/>
 
         <ImageButton
             android:id="@+id/exchange"
-            android:layout_width="0dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:adjustViewBounds="true"
             android:background="@android:color/white"
-            android:onClick="exchange"
+            android:contentDescription="@string/txt_exchangeDesc"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/exchange_button" />
+            app:srcCompat="@drawable/exchange_button"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"/>
 
         <Spinner
             android:id="@+id/translateTo"
-            android:layout_width="0dp"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="2dp"
@@ -50,9 +55,12 @@
             android:layout_marginTop="2dp"
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown"
-            android:layout_weight="3" />
-
-    </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/exchange"
+            android:layout_toEndOf="@id/exchange"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/originalWord"
@@ -108,7 +116,9 @@
             android:gravity="start"
             android:textColor="@android:color/black"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"/>
 
@@ -121,7 +131,9 @@
             android:gravity="end"
             android:textColor="@android:color/black"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"/>
     </RelativeLayout>
@@ -143,7 +155,7 @@
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:text="@string/text_rating"
         android:textAlignment="center"
         android:textColor="@android:color/black"

@@ -23,4 +23,5 @@
     <string name="button_add">Add</string>
     <string name="text_newTranslate">New Translation</string>
     <string name="text_history">History</string>
+    <string name="txt_exchangeDesc">Button to swap the translation languages</string>
 </resources>

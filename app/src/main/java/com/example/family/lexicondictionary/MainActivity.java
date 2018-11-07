@@ -1,5 +1,6 @@
 package com.example.family.lexicondictionary;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -13,16 +14,10 @@ import android.widget.TextView;
 import com.example.family.lexicondictionary.Adapter.HistoryListAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose
-
     //SharedPreferences, store all history from that specific user
     String[] originalWordArray = {"Hello","YH"}; //to be added later
     String[] translatedWordArray = {"Hi", "Yv Heng"};
     boolean[] favoriteWord = {false, false};
-
-    TextView textViewTranslatedWord;
-
-    Spinner translateFromList, translateToList, temp;
 
     ListView listView;
     @Override
@@ -32,16 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
         HistoryListAdapter historyListAdapter = new HistoryListAdapter(this,
                 originalWordArray, translatedWordArray, favoriteWord);
-
-        translateFromList= (Spinner)findViewById(R.id.translateFrom);
-        translateToList= (Spinner)findViewById(R.id.translateTo);
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, languages);
-
-        translateFromList.setAdapter(spinnerAdapter);
-        translateToList.setAdapter(spinnerAdapter);
-        translateFromList.setOnTouchListener(spinnerOnTouch);
-        translateToList.setOnTouchListener(spinnerOnTouch);
 
         listView = (ListView) findViewById(R.id.historyList);
         listView.setAdapter(historyListAdapter);
@@ -57,22 +42,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener(){
-        public boolean onTouch(View v, MotionEvent event){
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                //translate(); or refresh();
-            }
-            return true;
-        }
-    };
-
-    public void exchange(View v){
-        temp= (Spinner)findViewById(R.id.translateFrom);
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, languages);
-        temp.setAdapter(spinnerAdapter);
-        temp.setSelection(translateFromList.getSelectedItemPosition());
-        translateFromList.setSelection(translateToList.getSelectedItemPosition());
-        translateToList.setSelection(temp.getSelectedItemPosition());
+    public void newTranslate(View v){
+        Intent intent = new Intent(this, DisplayActivity.class);
+        startActivity(intent);
     }
 }

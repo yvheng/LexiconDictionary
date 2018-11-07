@@ -21,4 +21,6 @@
     <string name="text_pronunciation">Pronunciation:</string>
 
     <string name="button_add">Add</string>
+    <string name="text_newTranslate">New Translation</string>
+    <string name="text_history">History</string>
 </resources>

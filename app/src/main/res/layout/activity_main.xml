@@ -8,81 +8,37 @@
     android:weightSum="10"
     tools:context="com.example.family.lexicondictionary.MainActivity">
 
-    <LinearLayout
+    <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:layout_marginTop="3dp"
-        android:weightSum="7">
+        android:gravity="center"
+        android:onClick="newTranslate"
+        android:text="@string/text_newTranslate" />
 
-        <Spinner
-            android:id="@+id/translateFrom"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_weight="3" />
-
-        <ImageButton
-            android:id="@+id/exchange"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="@android:color/white"
-            android:onClick="exchange"
-            android:padding="7dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/exchange_button" />
-
-        <Spinner
-            android:id="@+id/translateTo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_weight="3" />
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/originalWord"
+    <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:ems="10"
-        android:gravity="start"
-        android:hint="@string/txt_enterText"
-        android:inputType="text|textAutoCorrect"
-        android:singleLine="false"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="81dp" />
+        android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/translatedWord"
-        android:layout_width="match_parent"
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="2"
-        android:gravity="start"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp" />
+        android:layout_marginLeft="6dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:layout_gravity="start"
+        android:text="@string/text_history"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
 
     <ListView
         android:id="@+id/historyList"
@@ -91,7 +47,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="3dp"
-        android:layout_weight="5"
+        android:layout_weight="6.5"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
 </LinearLayout>

@@ -277,7 +277,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="129dp"
+                android:layout_marginLeft="130dp"
                 android:text="@string/button_add" />
 
             <TextView

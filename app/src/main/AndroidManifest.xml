@@ -21,15 +21,20 @@
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".AddActivity"
             android:label="@string/title_activity_add"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".DisplayActivity"></activity>
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".DisplayActivity">
+        </activity>
+        <activity
+            android:name=".DisplayActivity"
+            android:label="@string/title_activity_display"
+            android:windowSoftInputMode="stateHidden"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
-
 </manifest>

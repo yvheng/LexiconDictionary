@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.family.lexicondictionary.DisplayActivity"
     android:orientation="vertical"
-    android:weightSum="12">
+    android:weightSum="12"
+    tools:context="com.example.family.lexicondictionary.DisplayActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,47 +19,47 @@
             android:id="@+id/translateFrom"
             android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@id/exchange"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="0dp"
             android:layout_toStartOf="@id/exchange"
-            android:layout_centerVertical="true"/>
+            android:layout_toLeftOf="@id/exchange"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
 
         <ImageButton
             android:id="@+id/exchange"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
             android:adjustViewBounds="true"
             android:background="@android:color/white"
             android:contentDescription="@string/txt_exchangeDesc"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/exchange_button"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"/>
+            app:srcCompat="@drawable/exchange_button" />
 
         <Spinner
             android:id="@+id/translateTo"
             android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/exchange"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="0dp"
             android:layout_toEndOf="@id/exchange"
-            android:layout_centerVertical="true"/>
+            android:layout_toRightOf="@id/exchange"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown" />
     </RelativeLayout>
 
     <EditText
@@ -82,91 +82,135 @@
         android:id="@+id/translatedWord"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:layout_weight="2"
         android:gravity="start"
         android:textAlignment="textStart"
         android:textColor="@android:color/darker_gray"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/textView1"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
-        android:text="@string/text_sentiment"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5">
-
-        <TextView
-            android:id="@+id/textView2"
+        android:layout_weight="6"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideInset">
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_negative"
-            android:textAlignment="textStart"
-            android:gravity="start"
-            android:textColor="@android:color/black"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"/>
+            android:orientation="vertical">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_positive"
-            android:textAlignment="textEnd"
-            android:gravity="end"
-            android:textColor="@android:color/black"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="@string/text_sentiment"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginEnd="270dp"
+                    android:layout_marginRight="270dp"
+                    android:layout_toStartOf="@+id/textView3"
+                    android:layout_toLeftOf="@+id/textView3"
+                    android:gravity="start"
+                    android:text="@string/text_negative"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="end"
+                    android:text="@string/text_positive"
+                    android:textAlignment="textEnd"
+                    android:textColor="@android:color/black" />
+            </RelativeLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:indeterminate="true" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp"/>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/text_rating"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:isIndicator="true"
+                android:numStars="@integer/ratingStarsNum"
+                android:padding="3dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp"/>
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/text_emotion"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/validateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:indeterminate="true" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.7"
-        android:text="@string/text_rating"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:gravity="center"/>
-
-    <RatingBar
-        android:id="@+id/ratingBar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:numStars="@integer/ratingStarsNum" />
-
+        android:text="@string/text_validate"
+        android:layout_gravity="end"/>
 </LinearLayout>

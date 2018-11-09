@@ -4,8 +4,10 @@
     <string name="txt_noImage">No image added.</string>
     <string name="txt_noVoice">No pronunciation added.</string>
 
-    <string name="title_activity_add">Adding new entry</string>
+    <string name="title_activity_add">Add/Edit entry</string>
+    <string name="title_activity_display">Translation</string>
     <string name="title_addNewEntry">Adding new Entry</string>
+    <string name="title_editEntry">Editing Entry</string>
 
     <string name="text_original">Original</string>
     <string name="text_originalWord">Original word</string>
@@ -24,4 +26,7 @@
     <string name="text_newTranslate">New Translation</string>
     <string name="text_history">History</string>
     <string name="txt_exchangeDesc">Button to swap the translation languages</string>
+    <string name="text_emotion">Emotion</string>
+    <string name="text_test">Testing</string>
+    <string name="text_validate">Validate</string>
 </resources>

@@ -8,6 +8,7 @@
     <string name="title_activity_display">Translation</string>
     <string name="title_addNewEntry">Adding new Entry</string>
     <string name="title_editEntry">Editing Entry</string>
+    <string name="title_popup_add">New Entry</string>
 
     <string name="text_original">Original</string>
     <string name="text_originalWord">Original word</string>
@@ -29,4 +30,8 @@
     <string name="text_emotion">Emotion</string>
     <string name="text_test">Testing</string>
     <string name="text_validate">Validate</string>
+    <string name="text_noResult">No Result</string>
+    <string name="txt_addPopMsg">Would you like to add a new entry into the database?</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_no">No</string>
 </resources>

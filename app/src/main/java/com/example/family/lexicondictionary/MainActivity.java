@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         HistoryListAdapter historyListAdapter = new HistoryListAdapter(this,
                 originalWordArray, translatedWordArray, favoriteWord);
 
-        listView = (ListView) findViewById(R.id.historyList);
+        listView = findViewById(R.id.historyList);
         listView.setAdapter(historyListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

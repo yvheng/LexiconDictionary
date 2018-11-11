@@ -12,12 +12,18 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,21 +57,25 @@ public class DisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
+        //Linking
         translateFromList= findViewById(R.id.translateFrom);
         translateToList= findViewById(R.id.translateTo);
         progressBar= findViewById(R.id.progressBar) ;
         validateButton= findViewById(R.id.validateButton);
         editTextOriginalWord= findViewById(R.id.originalWord);
         textViewTranslatedWord= findViewById(R.id.translatedWord);
+        mRecyclerView =  findViewById(R.id.recycler_view);
 
+        //Array adapter for spinner
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, languages);
-
+        //Setting spinner adapter and onTouchListener
         translateFromList.setAdapter(spinnerAdapter);
         translateToList.setAdapter(spinnerAdapter);
         translateFromList.setOnTouchListener(spinnerOnTouch);
         translateToList.setOnTouchListener(spinnerOnTouch);
 
+        //Setting progressBar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             progressBar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         }else{
@@ -74,10 +84,12 @@ public class DisplayActivity extends AppCompatActivity {
             progressBar.setProgressDrawable(progressDrawable);
         }
 
-        mRecyclerView =  findViewById(R.id.recycler_view);
+        //LayoutManager for recyclerView
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        //Divider for recyclerView
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 layoutManager.getOrientation());
+        //Setting layoutManager and divider to recyclerView
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         /*
@@ -85,12 +97,36 @@ public class DisplayActivity extends AppCompatActivity {
                 emotionNameList, emotionList);
         mRecyclerView.setAdapter(recyclerViewAdapter);
         */
+
+        editTextOriginalWord.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Check if the required field is empty
+                if(!(editTextOriginalWord.getText()==null||
+                        editTextOriginalWord.getText().toString().equals("")||
+                        editTextOriginalWord.getText().toString().equals(" "))){
+                    translate();
+                }else{
+                    emptyField();
+                }
+            }
+        });
     }
 
     private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener(){
         public boolean onTouch(View v, MotionEvent event){
             if(event.getAction() == MotionEvent.ACTION_UP){
-                //translate(); or refresh();
+                translate();
             }
             return true;
         }
@@ -108,20 +144,52 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     public void validate(View v){
-        Intent intent = new Intent(this, AddActivity.class);
-        //putExtra( KEY, VALUE);
-        intent.putExtra("STATUS", editStatus);
-        intent.putExtra(originalWordKey, editTextOriginalWord.getText());
-        intent.putExtra(translatedWordKey, textViewTranslatedWord.getText());
-        intent.putExtra(translatedFromKey, translateFromList.getSelectedItem().toString());
-        intent.putExtra(translatedToKey, translateToList.getSelectedItem().toString());
-        startActivity(intent);
+        //Check if the required field is empty
+        if(!(editTextOriginalWord.getText()==null||
+                editTextOriginalWord.getText().toString().equals("")||
+                editTextOriginalWord.getText().toString().equals(" "))){
+            //Check if this record is provided by user and not from original database
+            if(true) { //to be added
+                Intent intent = new Intent(this, AddActivity.class);
+                //putExtra( KEY, VALUE);
+                intent.putExtra("STATUS", editStatus);
+                intent.putExtra(originalWordKey, editTextOriginalWord.getText());
+                intent.putExtra(translatedWordKey, textViewTranslatedWord.getText());
+                intent.putExtra(translatedFromKey, translateFromList.getSelectedItem().toString());
+                intent.putExtra(translatedToKey, translateToList.getSelectedItem().toString());
+                startActivity(intent);
+            }
+        }else{
+            emptyField();
+            }
+
+    }
+
+    private void translate(){
+        String result=""; //translatedWord
+        //check internet & database connection
+
+        //send originalWordText to database
+
+        //check for result
+
+        if(result.equals(null)||
+                result.equals("")){
+            noResult();
+        }else{
+            textViewTranslatedWord.setText(result);
+        }
+    }
+
+    private void emptyField(){
+        Toast.makeText(this, "Original word is empty.",Toast.LENGTH_LONG).show();
     }
 
     private void noResult(){
         Toast.makeText(this,"No result found.",Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, AddActivity.class);
-        intent.putExtra("STATUS", addStatus);
+
+        //Display popup message to ask user
+        Intent intent = new Intent(this, AddPopUpWindow.class);
         startActivity(intent);
     }
 }

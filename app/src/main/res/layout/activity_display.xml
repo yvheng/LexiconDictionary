@@ -98,15 +98,17 @@
         android:layout_height="0dp"
         android:layout_weight="6"
         android:fillViewport="true"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="insideInset">
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="20dp"/>
+                android:layout_height="20dp" />
 
             <TextView
                 android:id="@+id/textView1"
@@ -115,7 +117,16 @@
                 android:text="@string/text_sentiment"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/textViewSentiment"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@android:color/black"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -154,18 +165,21 @@
                     android:text="@string/text_positive"
                     android:textAlignment="textEnd"
                     android:textColor="@android:color/black" />
+
             </RelativeLayout>
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
+            <SeekBar
+                android:id="@+id/seekBarSentiment"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:indeterminate="true" />
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:max="@integer/seekBarMax"
+                android:min="@integer/seekBarMin"
+                tools:targetApi="o" />
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="25dp"/>
+                android:layout_height="25dp" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -187,7 +201,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="25dp"/>
+                android:layout_height="25dp" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -203,7 +217,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:orientation="horizontal"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
         </LinearLayout>
     </ScrollView>
 

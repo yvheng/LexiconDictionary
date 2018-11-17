@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ import java.util.List;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
+    int seekBarCurrent = 5000;
+    double sentimentStrength=0;
     final static String addStatus= "ADD_STATUS";
     final static String editStatus= "EDIT_STATUS";
     final static String originalWordKey= "ORIGINAL_WORD";
@@ -45,12 +48,12 @@ public class DisplayActivity extends AppCompatActivity {
     List<String> emotionNameList;
     ImageData[] emotionList;
 
-    ProgressBar progressBar;
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
     Button validateButton;
     EditText editTextOriginalWord;
-    TextView textViewTranslatedWord;
+    TextView textViewTranslatedWord, textViewSentiment;
+    SeekBar seekBarSentiment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +63,39 @@ public class DisplayActivity extends AppCompatActivity {
         //Linking
         translateFromList= findViewById(R.id.translateFrom);
         translateToList= findViewById(R.id.translateTo);
-        progressBar= findViewById(R.id.progressBar) ;
         validateButton= findViewById(R.id.validateButton);
         editTextOriginalWord= findViewById(R.id.originalWord);
         textViewTranslatedWord= findViewById(R.id.translatedWord);
         mRecyclerView =  findViewById(R.id.recycler_view);
+        seekBarSentiment = findViewById(R.id.seekBarSentiment);
+        textViewSentiment = findViewById(R.id.textViewSentiment);
+
+        seekBarSentiment.setMax(R.integer.seekBarMax);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            seekBarSentiment.setMin(R.integer.seekBarMin);
+        }
+        seekBarSentiment.setProgress(seekBarCurrent);
+        sentimentStrength = (double)seekBarCurrent/2131296256.0;
+        textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
+
+        seekBarSentiment.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                seekBarCurrent = progress;
+                sentimentStrength = (double)seekBarCurrent/2131296256.0;
+                textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         //Array adapter for spinner
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
@@ -74,15 +105,6 @@ public class DisplayActivity extends AppCompatActivity {
         translateToList.setAdapter(spinnerAdapter);
         translateFromList.setOnTouchListener(spinnerOnTouch);
         translateToList.setOnTouchListener(spinnerOnTouch);
-
-        //Setting progressBar color
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            progressBar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        }else{
-            Drawable progressDrawable = progressBar.getIndeterminateDrawable().mutate();
-            progressDrawable.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-            progressBar.setProgressDrawable(progressDrawable);
-        }
 
         //LayoutManager for recyclerView
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);

@@ -31,6 +31,6 @@ public class AddPopUpWindow extends AppCompatActivity {
     }
 
     public void buttonNo(View v){
-
+        onBackPressed();
     }
 }

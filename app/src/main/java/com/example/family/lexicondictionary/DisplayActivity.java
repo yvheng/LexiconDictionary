@@ -1,11 +1,10 @@
 package com.example.family.lexicondictionary;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,24 +13,26 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.family.lexicondictionary.Adapter.ImageData;
-import com.example.family.lexicondictionary.Adapter.RecyclerViewAdapter;
+import com.example.family.lexicondictionary.Model.Word;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class DisplayActivity extends AppCompatActivity {
     final static String translatedToKey= "TRANSLATED_TO";
     List<String> emotionNameList;
     ImageData[] emotionList;
+    //List<Word> wordList;
+    Word word;
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
@@ -143,6 +146,10 @@ public class DisplayActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if(!isConnected()){
+            Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener(){
@@ -153,6 +160,75 @@ public class DisplayActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    private boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+    }
+
+    public void getWord(final Context context, final String url) {
+        class requestWord extends AsyncTask<String, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if(!isConnected())
+                    Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                RequestQueue queue = Volley.newRequestQueue(context);
+                JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                        new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                try {
+                                    //Clear list
+                                    //wordList.clear();
+                                    for (int i = 0; i < response.length(); i++) {
+                                        JSONObject recordResponse = (JSONObject) response.get(i);
+                                        int id = Integer.parseInt(recordResponse.getString("id"));
+                                        String content = recordResponse.getString("content");
+                                        String language = recordResponse.getString("language");
+                                        String status = recordResponse.getString("status");
+
+                                        word = new Word(id, content, language, status);
+                                        //wordList.add(word);
+                                    }
+                                    //Do something maybe
+
+                                } catch (Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+                                Toast.makeText(getApplicationContext(), "Error 2:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                queue.add(jsonObjectRequest);
+
+                return "";
+            }
+
+            @Override
+            protected void onProgressUpdate(Void... values) {
+                super.onProgressUpdate(values);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        }
+    }
 
     public void exchange(View v){
         temp= findViewById(R.id.translateFrom);
@@ -204,11 +280,11 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     private void emptyField(){
-        Toast.makeText(this, "Original word is empty.",Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Original word is empty.",Toast.LENGTH_SHORT).show();
     }
 
     private void noResult(){
-        Toast.makeText(this,"No result found.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"No result found.",Toast.LENGTH_SHORT).show();
 
         //Display popup message to ask user
         Intent intent = new Intent(this, AddPopUpWindow.class);

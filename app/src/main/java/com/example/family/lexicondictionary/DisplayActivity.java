@@ -50,6 +50,8 @@ public class DisplayActivity extends AppCompatActivity {
     ImageData[] emotionList;
     //List<Word> wordList;
     Word word;
+    Context context = getApplicationContext();
+    String url= "http://i2hub.tarc.edu.my:port_number";
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
@@ -170,63 +172,60 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    public void getWord(final Context context, final String url) {
-        class requestWord extends AsyncTask<String, Void, String> {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                if(!isConnected())
-                    Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
-            }
+    private class requestWord extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(!isConnected())
+                Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        }
 
-            @Override
-            protected String doInBackground(String... strings) {
-                RequestQueue queue = Volley.newRequestQueue(context);
-                JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
-                        new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray response) {
-                                try {
-                                    //Clear list
-                                    //wordList.clear();
-                                    for (int i = 0; i < response.length(); i++) {
-                                        JSONObject recordResponse = (JSONObject) response.get(i);
-                                        int id = Integer.parseInt(recordResponse.getString("id"));
-                                        String content = recordResponse.getString("content");
-                                        String language = recordResponse.getString("language");
-                                        String status = recordResponse.getString("status");
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestQueue queue = Volley.newRequestQueue(context);
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                //Clear list
+                                //wordList.clear();
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject recordResponse = (JSONObject) response.get(i);
+                                    int id = Integer.parseInt(recordResponse.getString("id"));
+                                    String content = recordResponse.getString("content");
+                                    String language = recordResponse.getString("language");
+                                    String status = recordResponse.getString("status");
 
-                                        word = new Word(id, content, language, status);
-                                        //wordList.add(word);
-                                    }
-                                    //Do something maybe
-
-                                } catch (Exception e) {
-                                    Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    word = new Word(id, content, language, status);
+                                    //wordList.add(word);
                                 }
+                                //Do something maybe
+
+                            } catch (Exception e) {
+                                Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError volleyError) {
-                                Toast.makeText(getApplicationContext(), "Error 2:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getApplicationContext(), "Error 2:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
 
-                            }
-                        });
-                queue.add(jsonObjectRequest);
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+            return null;
+        }
 
-                return "";
-            }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
 
-            @Override
-            protected void onProgressUpdate(Void... values) {
-                super.onProgressUpdate(values);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-            }
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
     }
 
@@ -266,7 +265,12 @@ public class DisplayActivity extends AppCompatActivity {
     private void translate(){
         String result=""; //translatedWord
         //check internet & database connection
+        if(isConnected()){
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        }else{
+            new requestWord().execute();
 
+        }
         //send originalWordText to database
 
         //check for result

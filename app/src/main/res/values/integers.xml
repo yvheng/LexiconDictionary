@@ -2,5 +2,5 @@
 <resources>
     <integer name="ratingStarsNum">5</integer>
     <integer name="seekBarMax">10000</integer>
-    <integer name="seekBarMin">0</integer>
+    <integer name="seekBarMin">-10000</integer>
 </resources>

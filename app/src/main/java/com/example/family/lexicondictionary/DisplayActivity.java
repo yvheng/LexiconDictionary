@@ -23,10 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.family.lexicondictionary.Adapter.ImageData;
 import com.example.family.lexicondictionary.Model.Word;
@@ -34,7 +37,12 @@ import com.example.family.lexicondictionary.Model.Word;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
@@ -50,8 +58,7 @@ public class DisplayActivity extends AppCompatActivity {
     ImageData[] emotionList;
     //List<Word> wordList;
     Word word;
-    Context context = getApplicationContext();
-    String url= "http://i2hub.tarc.edu.my:port_number";
+    String url= "http://i2hub.tarc.edu.my:8117/selectWord.php";
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
@@ -135,17 +142,28 @@ public class DisplayActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
-
+            private Timer timer=new Timer();
+            private final long DELAY = 2000; // milliseconds
             @Override
             public void afterTextChanged(Editable s) {
-                //Check if the required field is empty
-                if(!(editTextOriginalWord.getText()==null||
-                        editTextOriginalWord.getText().toString().equals("")||
-                        editTextOriginalWord.getText().toString().equals(" "))){
-                    translate();
-                }else{
-                    emptyField();
-                }
+                timer.cancel();
+                timer = new Timer();
+                timer.schedule(
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                                //Check if the required field is empty
+                                if(!(editTextOriginalWord.getText()==null||
+                                        editTextOriginalWord.getText().toString().equals("")||
+                                        editTextOriginalWord.getText().toString().equals(" "))){
+                                    translate();
+                                }else{
+                                    emptyField();
+                                }
+                            }
+                        },
+                        DELAY
+                );
             }
         });
 
@@ -182,7 +200,51 @@ public class DisplayActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            RequestQueue queue = Volley.newRequestQueue(context);
+            //mPostCommentResponse.requestStarted();
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            /*//Send data
+            try {
+                StringRequest postRequest = new StringRequest(
+                        Request.Method.POST,
+                        url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Toast.makeText(getApplicationContext(), "Successfully topup. Amount has been deducted from credit card", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(getApplicationContext(), "Error. " + error.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("originalContent", word.getOriginalContent());
+                        params.put("originalLanguage", word.getOriginalLanguage());
+                        params.put("translatedLanguage", word.getTranslatedLanguage());
+
+                        return params;
+                    }
+
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("Content-Type", "application/x-www-form-urlencoded");
+                        return params;
+                    }
+                };
+                queue.add(postRequest);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+
+            //queue.getCache().remove();
+
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
                     new Response.Listener<JSONArray>() {
                         @Override
@@ -193,14 +255,19 @@ public class DisplayActivity extends AppCompatActivity {
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject recordResponse = (JSONObject) response.get(i);
                                     int id = Integer.parseInt(recordResponse.getString("id"));
-                                    String content = recordResponse.getString("content");
-                                    String language = recordResponse.getString("language");
+                                    String originalContent = recordResponse.getString("originalContent");
+                                    String translatedContent = recordResponse.getString("translatedContent");
+                                    String originalLanguage = recordResponse.getString("originalLanguage");
+                                    String translatedLanguage = recordResponse.getString("translatedLanguage");
                                     String status = recordResponse.getString("status");
+                                    Date dateTimeAdded = Date.valueOf(recordResponse.getString("dateTimeAdded"));
+                                    int userID = Integer.parseInt(recordResponse.getString("userID"));
 
-                                    word = new Word(id, content, language, status);
+                                    word = new Word(id, originalContent, translatedContent, originalLanguage,
+                                            translatedLanguage,status, dateTimeAdded, userID);
                                     //wordList.add(word);
                                 }
-                                //Do something maybe
+                            //Do something maybe
 
                             } catch (Exception e) {
                                 Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -265,22 +332,24 @@ public class DisplayActivity extends AppCompatActivity {
     private void translate(){
         String result=""; //translatedWord
         //check internet & database connection
-        if(isConnected()){
+        if(!isConnected()){
             Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
         }else{
             new requestWord().execute();
 
+            //Set fields to answer
+            textViewTranslatedWord.setText(word.getTranslatedContent());
         }
         //send originalWordText to database
 
         //check for result
 
-        if(result.equals(null)||
+        /*if(result.equals(null)||
                 result.equals("")){
             noResult();
         }else{
             textViewTranslatedWord.setText(result);
-        }
+        }*/
     }
 
     private void emptyField(){

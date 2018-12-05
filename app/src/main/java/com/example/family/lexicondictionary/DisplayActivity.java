@@ -58,7 +58,7 @@ public class DisplayActivity extends AppCompatActivity {
     ImageData[] emotionList;
     //List<Word> wordList;
     Word word;
-    String url= "http://i2hub.tarc.edu.my:8117/selectWord.php";
+    String url= "http://i2hub.tarc.edu.my:8117/selectSpecWord.php";
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;

@@ -58,7 +58,7 @@ public class DisplayActivity extends AppCompatActivity {
     ImageData[] emotionList;
     //List<Word> wordList;
     Word word;
-    String url= "http://i2hub.tarc.edu.my:8117/selectSpecWord.php";
+    String wordUrl= "http://i2hub.tarc.edu.my:8117/selectSpecWord.php?";
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
@@ -203,55 +203,15 @@ public class DisplayActivity extends AppCompatActivity {
             //mPostCommentResponse.requestStarted();
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-            /*//Send data
-            try {
-                StringRequest postRequest = new StringRequest(
-                        Request.Method.POST,
-                        url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Toast.makeText(getApplicationContext(), "Successfully topup. Amount has been deducted from credit card", Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getApplicationContext(), "Error. " + error.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("originalContent", word.getOriginalContent());
-                        params.put("originalLanguage", word.getOriginalLanguage());
-                        params.put("translatedLanguage", word.getTranslatedLanguage());
-
-                        return params;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("Content-Type", "application/x-www-form-urlencoded");
-                        return params;
-                    }
-                };
-                queue.add(postRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-
-            //queue.getCache().remove();
-
-            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(wordUrl,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
                             try {
-                                //Clear list
-                                //wordList.clear();
+                                wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
+                                wordUrl += "&originalLanguage"+translateFromList.getSelectedItem().toString();
+                                wordUrl += "&translatedLanguage"+translateToList.getSelectedItem().toString();
+
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject recordResponse = (JSONObject) response.get(i);
                                     int id = Integer.parseInt(recordResponse.getString("id"));

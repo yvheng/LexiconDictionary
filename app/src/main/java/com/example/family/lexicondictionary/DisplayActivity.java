@@ -15,6 +15,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +60,7 @@ public class DisplayActivity extends AppCompatActivity {
     //List<Word> wordList;
     Word word;
     String wordUrl= "http://i2hub.tarc.edu.my:8117/selectSpecWord.php?";
+    Boolean empty = true;
 
     Spinner translateFromList, translateToList, temp;
     RecyclerView mRecyclerView;
@@ -115,8 +117,29 @@ public class DisplayActivity extends AppCompatActivity {
         //Setting spinner adapter and onTouchListener
         translateFromList.setAdapter(spinnerAdapter);
         translateToList.setAdapter(spinnerAdapter);
-        translateFromList.setOnTouchListener(spinnerOnTouch);
-        translateToList.setOnTouchListener(spinnerOnTouch);
+        translateToList.setSelection(1);/*
+        translateFromList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                translate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                translateFromList.setSelection(0);
+            }
+        });
+        translateToList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                translate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                translateFromList.setSelection(1);
+            }
+        });*/
 
         //LayoutManager for recyclerView
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
@@ -158,7 +181,7 @@ public class DisplayActivity extends AppCompatActivity {
                                         editTextOriginalWord.getText().toString().equals(" "))){
                                     translate();
                                 }else{
-                                    emptyField();
+                                    Toast.makeText(getApplicationContext(), "Original word is empty.",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         },
@@ -172,15 +195,6 @@ public class DisplayActivity extends AppCompatActivity {
         }
     }
 
-    private View.OnTouchListener spinnerOnTouch = new View.OnTouchListener(){
-        public boolean onTouch(View v, MotionEvent event){
-            if(event.getAction() == MotionEvent.ACTION_UP){
-                translate();
-            }
-            return true;
-        }
-    };
-
     private boolean isConnected() {
         ConnectivityManager cm =
                 (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -190,69 +204,51 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    private class requestWord extends AsyncTask<Void, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if(!isConnected())
-                Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            //mPostCommentResponse.requestStarted();
+    public void requestWord(){
+        if(!isConnected())
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        else{
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
+            wordUrl += "&originalLanguage="+translateFromList.getSelectedItem().toString();
+            wordUrl += "&translatedLanguage="+translateToList.getSelectedItem().toString();
 
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(wordUrl,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
                             try {
-                                wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
-                                wordUrl += "&originalLanguage"+translateFromList.getSelectedItem().toString();
-                                wordUrl += "&translatedLanguage"+translateToList.getSelectedItem().toString();
+                                JSONObject recordResponse = (JSONObject) response.get(0);
+                                int id = Integer.parseInt(recordResponse.getString("id"));
+                                String originalContent = recordResponse.getString("originalContent");
+                                String translatedContent = recordResponse.getString("translatedContent");
+                                String originalLanguage = recordResponse.getString("originalLanguage");
+                                String translatedLanguage = recordResponse.getString("translatedLanguage");
+                                String status = recordResponse.getString("status");
+                                Date dateTimeAdded = Date.valueOf(recordResponse.getString("dateTimeAdded"));
+                                int userID = Integer.parseInt(recordResponse.getString("userID"));
 
-                                for (int i = 0; i < response.length(); i++) {
-                                    JSONObject recordResponse = (JSONObject) response.get(i);
-                                    int id = Integer.parseInt(recordResponse.getString("id"));
-                                    String originalContent = recordResponse.getString("originalContent");
-                                    String translatedContent = recordResponse.getString("translatedContent");
-                                    String originalLanguage = recordResponse.getString("originalLanguage");
-                                    String translatedLanguage = recordResponse.getString("translatedLanguage");
-                                    String status = recordResponse.getString("status");
-                                    Date dateTimeAdded = Date.valueOf(recordResponse.getString("dateTimeAdded"));
-                                    int userID = Integer.parseInt(recordResponse.getString("userID"));
+                                word = new Word(id, originalContent, translatedContent, originalLanguage,
+                                        translatedLanguage,status, dateTimeAdded, userID);
+                                empty=false;
 
-                                    word = new Word(id, originalContent, translatedContent, originalLanguage,
-                                            translatedLanguage,status, dateTimeAdded, userID);
-                                    //wordList.add(word);
-                                }
-                            //Do something maybe
-
-                            } catch (Exception e) {
-                                Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                //set retrieved word to the textView
+                                textViewTranslatedWord.setText(word.getTranslatedContent());
+                            } catch (NullPointerException e) {
+                                Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+                            } catch(Exception e){
+                                Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
-                            Toast.makeText(getApplicationContext(), "Error 2:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
             queue.add(jsonObjectRequest);
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
         }
     }
 
@@ -271,49 +267,33 @@ public class DisplayActivity extends AppCompatActivity {
         //Check if the required field is empty
         if(!(editTextOriginalWord.getText()==null||
                 editTextOriginalWord.getText().toString().equals("")||
-                editTextOriginalWord.getText().toString().equals(" "))){
+                editTextOriginalWord.getText().toString().equals(" "))||
+                textViewTranslatedWord.getText()==null||
+                textViewTranslatedWord.getText().toString().equals("")){
             //Check if this record is provided by user and not from original database
-            if(true) { //to be added
+            if(!word.getStatus().toString().equals("default")) {
                 Intent intent = new Intent(this, AddActivity.class);
                 //putExtra( KEY, VALUE);
                 intent.putExtra("STATUS", editStatus);
-                intent.putExtra(originalWordKey, editTextOriginalWord.getText());
-                intent.putExtra(translatedWordKey, textViewTranslatedWord.getText());
+                intent.putExtra(originalWordKey, editTextOriginalWord.getText().toString());
+                intent.putExtra(translatedWordKey, textViewTranslatedWord.getText().toString());
                 intent.putExtra(translatedFromKey, translateFromList.getSelectedItem().toString());
                 intent.putExtra(translatedToKey, translateToList.getSelectedItem().toString());
                 startActivity(intent);
             }
         }else{
-            emptyField();
-            }
+            Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     private void translate(){
-        String result=""; //translatedWord
         //check internet & database connection
         if(!isConnected()){
             Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
         }else{
-            new requestWord().execute();
-
-            //Set fields to answer
-            textViewTranslatedWord.setText(word.getTranslatedContent());
+            requestWord();
         }
-        //send originalWordText to database
-
-        //check for result
-
-        /*if(result.equals(null)||
-                result.equals("")){
-            noResult();
-        }else{
-            textViewTranslatedWord.setText(result);
-        }*/
-    }
-
-    private void emptyField(){
-        Toast.makeText(getApplicationContext(), "Original word is empty.",Toast.LENGTH_SHORT).show();
     }
 
     private void noResult(){

@@ -29,7 +29,7 @@
             android:layout_toStartOf="@id/exchange"
             android:layout_toLeftOf="@id/exchange"
             android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"/>
 
         <ImageButton
             android:id="@+id/exchange"
@@ -44,7 +44,7 @@
             android:onClick="exchange"
             android:padding="7dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/exchange_button" />
+            app:srcCompat="@mipmap/exchange_button" />
 
         <Spinner
             android:id="@+id/translateTo"
@@ -60,7 +60,7 @@
             android:layout_toEndOf="@id/exchange"
             android:layout_toRightOf="@id/exchange"
             android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"/>
     </RelativeLayout>
 
     <EditText

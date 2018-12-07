@@ -1,11 +1,15 @@
 <resources>
+    <!-- App name -->
     <string name="app_name">Lexicon Dictionary</string>
+
+    <!-- Long texts -->
     <string name="txt_enterText">Tap to enter text</string>
     <string name="txt_noImage">No image added.</string>
     <string name="txt_noVoice">No pronunciation added.</string>
     <string name="txt_exchangeDesc">Button to swap the translation languages</string>
     <string name="txt_addPopMsg">Would you like to add a new entry into the database?</string>
 
+    <!-- Title name -->
     <string name="title_activity_add">Add/Edit entry</string>
     <string name="title_activity_display">Translation</string>
     <string name="title_addNewEntry">Adding new Entry</string>
@@ -13,6 +17,7 @@
     <string name="title_popup_add">New Entry</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- Short texts -->
     <string name="text_original">Original</string>
     <string name="text_originalWord">Original word</string>
     <string name="text_translated">Translated</string>
@@ -34,7 +39,15 @@
     <string name="text_no">No</string>
     <string name="text_pronunciation">Pronunciation:</string>
 
+    <!-- Button texts -->
     <string name="button_add">Add</string>
+
+    <!-- Spinner items -->
+    <string-array name="languages">
+        <item>English</item>
+        <item>Malay</item>
+        <item>Mandarin</item>
+    </string-array>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>

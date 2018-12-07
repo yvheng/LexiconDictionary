@@ -65,5 +65,5 @@
         android:background="@android:color/white"
         android:padding="2dp"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/emptystar_button" />
+        app:srcCompat="@mipmap/emptystar_button" />
 </LinearLayout>

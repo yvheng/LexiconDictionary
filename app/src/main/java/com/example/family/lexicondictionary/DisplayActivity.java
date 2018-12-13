@@ -47,7 +47,7 @@ import java.util.TimerTask;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
-    int seekBarCurrent = 5000;
+    int seekBarCurrent = 0;
     double sentimentStrength=0;
     final static String addStatus= "ADD_STATUS";
     final static String editStatus= "EDIT_STATUS";
@@ -55,14 +55,13 @@ public class DisplayActivity extends AppCompatActivity {
     final static String translatedWordKey= "TRANSLATED_WORD";
     final static String translatedFromKey= "TRANSLATED_FROM";
     final static String translatedToKey= "TRANSLATED_TO";
-    List<String> emotionNameList;
-    ImageData[] emotionList;
+    //List<String> emotionNameList;
+    //ImageData[] emotionList;
     //List<Word> wordList;
     Word word;
-    String wordUrl= "http://i2hub.tarc.edu.my:8117/selectSpecWord.php?";
-    Boolean empty = true;
+    String wordUrl;
 
-    Spinner translateFromList, translateToList, temp;
+    Spinner translateFromList, translateToList;
     RecyclerView mRecyclerView;
     Button validateButton;
     EditText editTextOriginalWord;
@@ -85,18 +84,20 @@ public class DisplayActivity extends AppCompatActivity {
         textViewSentiment = findViewById(R.id.textViewSentiment);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             seekBarSentiment.setMin(R.integer.seekBarMin);
-        }
+        }*/
         seekBarSentiment.setProgress(seekBarCurrent);
-        sentimentStrength = (double)seekBarCurrent/2131296256.0;
+        sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
+        //sentimentStrength = seekBarCurrent;
         textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
 
         seekBarSentiment.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 seekBarCurrent = progress;
-                sentimentStrength = (double)seekBarCurrent/2131296256.0;
+                sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
+                //sentimentStrength = seekBarCurrent;
                 textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
             }
 
@@ -117,7 +118,8 @@ public class DisplayActivity extends AppCompatActivity {
         //Setting spinner adapter and onTouchListener
         translateFromList.setAdapter(spinnerAdapter);
         translateToList.setAdapter(spinnerAdapter);
-        translateToList.setSelection(1);/*
+        translateToList.setSelection(1);
+
         translateFromList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -139,7 +141,7 @@ public class DisplayActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
                 translateFromList.setSelection(1);
             }
-        });*/
+        });
 
         //LayoutManager for recyclerView
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
@@ -158,7 +160,7 @@ public class DisplayActivity extends AppCompatActivity {
         editTextOriginalWord.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                textViewTranslatedWord.setText("");
             }
 
             @Override
@@ -210,6 +212,7 @@ public class DisplayActivity extends AppCompatActivity {
         else{
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
+            wordUrl = "http://i2hub.tarc.edu.my:8117/selectSpecWord.php?";
             wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
             wordUrl += "&originalLanguage="+translateFromList.getSelectedItem().toString();
             wordUrl += "&translatedLanguage="+translateToList.getSelectedItem().toString();
@@ -231,14 +234,22 @@ public class DisplayActivity extends AppCompatActivity {
 
                                 word = new Word(id, originalContent, translatedContent, originalLanguage,
                                         translatedLanguage,status, dateTimeAdded, userID);
-                                empty=false;
 
                                 //set retrieved word to the textView
                                 textViewTranslatedWord.setText(word.getTranslatedContent());
                             } catch (NullPointerException e) {
                                 Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
-                            } catch(Exception e){
-                                Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }catch(Exception e){
+                                if(e.getMessage().equals("Index 0 out of range [0..0)")) {
+                                    if(!(editTextOriginalWord.getText()==null||
+                                            editTextOriginalWord.getText().toString().equals("")||
+                                            editTextOriginalWord.getText().toString().equals(" ")||
+                                            textViewTranslatedWord.getText()==null||
+                                            textViewTranslatedWord.getText().toString().equals("")))
+                                        noResult();
+                                }
+                                else
+                                    Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     },
@@ -253,25 +264,22 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     public void exchange(View v){
-        temp= findViewById(R.id.translateFrom);
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item, languages);
-        temp.setAdapter(spinnerAdapter);
+        int temp=0;
+        temp = translateFromList.getSelectedItemPosition();
 
-        temp.setSelection(translateFromList.getSelectedItemPosition());
         translateFromList.setSelection(translateToList.getSelectedItemPosition());
-        translateToList.setSelection(temp.getSelectedItemPosition());
+        translateToList.setSelection(temp);
     }
 
     public void validate(View v){
         //Check if the required field is empty
         if(!(editTextOriginalWord.getText()==null||
                 editTextOriginalWord.getText().toString().equals("")||
-                editTextOriginalWord.getText().toString().equals(" "))||
+                editTextOriginalWord.getText().toString().equals(" ")||
                 textViewTranslatedWord.getText()==null||
-                textViewTranslatedWord.getText().toString().equals("")){
+                textViewTranslatedWord.getText().toString().equals(""))){
             //Check if this record is provided by user and not from original database
-            if(!word.getStatus().toString().equals("default")) {
+            if(!word.getStatus().equals("default")) {
                 Intent intent = new Intent(this, AddActivity.class);
                 //putExtra( KEY, VALUE);
                 intent.putExtra("STATUS", editStatus);
@@ -280,11 +288,12 @@ public class DisplayActivity extends AppCompatActivity {
                 intent.putExtra(translatedFromKey, translateFromList.getSelectedItem().toString());
                 intent.putExtra(translatedToKey, translateToList.getSelectedItem().toString());
                 startActivity(intent);
+            }else{
+                Toast.makeText(getApplicationContext(), "Unable to edit default word.", Toast.LENGTH_SHORT).show();
             }
         }else{
             Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void translate(){

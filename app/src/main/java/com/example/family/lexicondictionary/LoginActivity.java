@@ -297,7 +297,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 //finish();
                                 startActivity(intent);
                             } catch (Exception e) {
-                                Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                if(e.getMessage().equals("Index 0 out of range [0..0)")) {
+                                    showProgress(false);
+                                    mPasswordView.setError(getString(R.string.error_invalid_login));
+                                    mPasswordView.requestFocus();
+                                }
+                                else
+                                    Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     },
@@ -318,8 +324,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(intent);
         }else{
             showProgress(false);
-            mPasswordView.setError(getString(R.string.error_invalid_login));
-            mPasswordView.requestFocus();
+            /*mPasswordView.setError(getString(R.string.error_invalid_login));
+            mPasswordView.requestFocus();*/
         }
     }
 }

@@ -1,48 +1,46 @@
 package com.example.family.lexicondictionary.Adapter;
 
-import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.family.lexicondictionary.Model.Word;
 import com.example.family.lexicondictionary.R;
 
-/**
- * Created by Family on 23/10/2018.
- */
+import java.util.List;
 
-public class HistoryListAdapter extends ArrayAdapter{
-    //to reference the Activity
-    private final Activity context;
-    //to store the list of original word
-    private String[] originalWordArray;
-    //to store the list of translated word
-    private String[] translatedWordArray;
-    //to store the list of favorite word
-    private boolean[] favoriteWord;
-
-    public HistoryListAdapter(Activity context, String[] originalWordArray, String[] translatedWordArray, boolean[] favoriteWord) {
-        super(context, R.layout.history_list, originalWordArray);
-
-        this.context = context;
-        this.originalWordArray = originalWordArray;
-        this.translatedWordArray = translatedWordArray;
-        this.favoriteWord = favoriteWord;
+public class HistoryListAdapter extends ArrayAdapter<Word> {
+    public HistoryListAdapter(@NonNull Context context, int resource, @NonNull List<Word> objects) {
+        super(context, resource, objects);
     }
 
-    public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.history_list, null, true);
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        Word word = getItem(position);
 
-        //this code gets references to objects in the history_list.xml file
-        TextView originalWord = (TextView) rowView.findViewById(R.id.originalWord);
-        TextView translatedWord = (TextView) rowView.findViewById(R.id.translatedWord);
+        LayoutInflater inflater  = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //this code sets the values of the objects to values from the arrays
-        originalWord.setText(originalWordArray[position]);
-        translatedWord.setText(translatedWordArray[position]);
+        View rowView = inflater.inflate(R.layout.history_list, parent, false);
+
+        TextView originalWord, translatedWord;
+
+        originalWord = rowView.findViewById(R.id.originalWord);
+        translatedWord = rowView.findViewById(R.id.translatedWord);
+
+        try {
+            originalWord.setText(word.getOriginalContent());
+            translatedWord.setText(word.getTranslatedContent());
+        }catch(NullPointerException ex){
+            Toast.makeText(this.getContext(), "History list is empty",Toast.LENGTH_SHORT).show();
+        }
 
         return rowView;
     }

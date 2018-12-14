@@ -16,6 +16,7 @@
     <string name="title_editEntry">Editing Entry</string>
     <string name="title_popup_add">New Entry</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_register">Register New Account</string>
 
     <!-- Short texts -->
     <string name="text_original">Original</string>
@@ -55,4 +56,9 @@
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_login">Username and/or Password is invalid</string>
     <string name="error_field_required">This field is required</string>
+
+    <!-- Strings related to registration -->
+    <string name="action_sign_up">Sign Up</string>
+    <string name="error_invalid_register">Username is used</string>
+
 </resources>

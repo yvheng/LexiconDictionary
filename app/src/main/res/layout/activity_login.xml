@@ -73,6 +73,18 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
+            <Button
+                android:id="@+id/btnSignUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/action_sign_up"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

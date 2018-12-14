@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -55,6 +56,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     User user;
     final static String userIDKey= "USER_ID";
     Boolean success=false;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -300,7 +302,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 user = new User(id, username, password);
                                 showProgress(false);
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                intent.putExtra(userIDKey, user.getId());
+                                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                                editor.putInt(userIDKey, user.getId());
+                                editor.apply();
                                 Toast.makeText(getApplicationContext(), "Logged in.", Toast.LENGTH_SHORT).show();
                                 //finish();
                                 startActivity(intent);

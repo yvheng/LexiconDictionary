@@ -231,9 +231,10 @@ public class DisplayActivity extends AppCompatActivity {
                                 String status = recordResponse.getString("status");
                                 Date dateTimeAdded = Date.valueOf(recordResponse.getString("dateTimeAdded"));
                                 int userID = Integer.parseInt(recordResponse.getString("userID"));
+                                int lastEditUserID = Integer.parseInt(recordResponse.getString("lastEditUserID"));
 
                                 word = new Word(id, originalContent, translatedContent, originalLanguage,
-                                        translatedLanguage,status, dateTimeAdded, userID);
+                                        translatedLanguage,status, dateTimeAdded, userID, lastEditUserID);
 
                                 //set retrieved word to the textView
                                 textViewTranslatedWord.setText(word.getTranslatedContent());
@@ -243,9 +244,7 @@ public class DisplayActivity extends AppCompatActivity {
                                 if(e.getMessage().equals("Index 0 out of range [0..0)")) {
                                     if(!(editTextOriginalWord.getText()==null||
                                             editTextOriginalWord.getText().toString().equals("")||
-                                            editTextOriginalWord.getText().toString().equals(" ")||
-                                            textViewTranslatedWord.getText()==null||
-                                            textViewTranslatedWord.getText().toString().equals("")))
+                                            editTextOriginalWord.getText().toString().equals(" ")))
                                         noResult();
                                 }
                                 else
@@ -307,9 +306,15 @@ public class DisplayActivity extends AppCompatActivity {
 
     private void noResult(){
         Toast.makeText(getApplicationContext(),"No result found.",Toast.LENGTH_SHORT).show();
+        String originalWord = editTextOriginalWord.getText().toString();
+        String translateFrom = translateFromList.getSelectedItem().toString();
+        String translateTo = translateToList.getSelectedItem().toString();
 
-        //Display popup message to ask user
         Intent intent = new Intent(this, AddPopUpWindow.class);
+        intent.putExtra("STATUS", addStatus);
+        intent.putExtra(originalWordKey, originalWord);
+        intent.putExtra(translatedFromKey, translateFrom);
+        intent.putExtra(translatedToKey, translateTo);
         startActivity(intent);
     }
 }

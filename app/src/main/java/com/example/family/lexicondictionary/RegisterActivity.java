@@ -55,19 +55,13 @@ public class RegisterActivity extends AppCompatActivity {
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNewUser();
+                addUser(editTextUsername.getText().toString());
             }
         });
 
         if(!isConnected())
             Toast.makeText(getApplicationContext(), "No Internet connection.", Toast.LENGTH_SHORT).show();
     }
-
-    public void addNewUser(){
-        String username = editTextUsername.getText().toString();
-        addUser(username);
-    }
-
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -184,20 +178,6 @@ public class RegisterActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void insertUser(final String username, final String password){
-        /*String url = "http://i2hub.tarc.edu.my:8117/writeUser.php?";
-
-        //PreExecute
-        if (!isConnected())
-            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
-        else{
-            url += "username=" + username;
-            url += "&password=" + password;
-
-            makeServiceCallAddUser(getApplicationContext(), url);
-        }*/
     }
 
     private boolean isConnected() {

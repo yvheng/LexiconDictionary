@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0; i < originalWordArray.length; i++) {
             Word historyWord = new Word(0, originalWordArray[i], translatedWordArray[i],
                     null, null, null,
-                    null, 0); //ToDo: Add more details in history list
+                    null, 0, 0); //ToDo: Add more details in history list
             historyList.add(historyWord);
         }
 

@@ -6,11 +6,11 @@ public class Word {
     private int id;
     private String originalContent, translatedContent, originalLanguage, translatedLanguage, status;
     private Date dateTimeAdded=null;
-    private int userID= 0;
+    private int userID= 0, lastEditUserID=0;
 
     public Word(int id, String originalContent, String translatedContent,
                 String originalLanguage, String translatedLanguage,
-                String status, Date dateTimeAdded, int userID) {
+                String status, Date dateTimeAdded, int userID, int lastEditUserID) {
         this.id = id;
         this.originalContent = originalContent;
         this.translatedContent = translatedContent;
@@ -19,6 +19,7 @@ public class Word {
         this.status = status;
         this.dateTimeAdded = dateTimeAdded;
         this.userID = userID;
+        this.lastEditUserID = lastEditUserID;
     }
 
     public Word() {
@@ -35,7 +36,16 @@ public class Word {
                 ", status='" + status + '\'' +
                 ", dateTimeAdded=" + dateTimeAdded +
                 ", userID=" + userID +
+                ", lastEditUserID=" + lastEditUserID +
                 '}';
+    }
+
+    public int getLastEditUserID() {
+        return lastEditUserID;
+    }
+
+    public void setLastEditUserID(int lastEditUserID) {
+        this.lastEditUserID = lastEditUserID;
     }
 
     public int getId() {

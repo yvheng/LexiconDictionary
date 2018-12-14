@@ -1,11 +1,13 @@
 package com.example.family.lexicondictionary;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Toast;
 
 import static com.example.family.lexicondictionary.DisplayActivity.addStatus;
 import static com.example.family.lexicondictionary.DisplayActivity.originalWordKey;
@@ -45,7 +47,21 @@ public class AddPopUpWindow extends AppCompatActivity {
         intent.putExtra(translatedFromKey, translateFrom);
         intent.putExtra(translatedToKey, translateTo);
         intent.putExtra("STATUS", addStatus);
-        startActivity(intent);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==1){
+            if(resultCode == Activity.RESULT_OK){
+                Toast.makeText(getApplicationContext(), "New word added.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+            if(resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(getApplicationContext(), "Operation cancelled.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
     public void buttonNo(View v){

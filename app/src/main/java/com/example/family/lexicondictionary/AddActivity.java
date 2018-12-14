@@ -3,7 +3,9 @@ package com.example.family.lexicondictionary;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -159,7 +161,8 @@ public class AddActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             showProgress(false);
-                            Toast.makeText(getApplicationContext(), "New word added.", Toast.LENGTH_LONG).show();
+                            Intent returnIntent = new Intent();
+                            setResult(Activity.RESULT_OK, returnIntent);
                             finish();
                         }
                     },
@@ -219,5 +222,12 @@ public class AddActivity extends AppCompatActivity {
             textViewTranslateFrom.setText("");
             textViewTranslateTo.setText("");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
     }
 }

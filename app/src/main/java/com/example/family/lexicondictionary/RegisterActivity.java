@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void addUser(final String username) {
-        String url = "http://i2hub.tarc.edu.my:8117/checkUser.php?";
+        String url = getString(R.string.url_checkUser);
 
         //PreExecute
         if (!isConnected())
@@ -118,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     //username available
                                     //insertUser(username, editTextPassword.getText().toString());
                                     makeServiceCallAddUser(getApplicationContext(),
-                                            "http://i2hub.tarc.edu.my:8117/writeUser.php?",
+                                            getString(R.string.url_writeUser),
                                             username, editTextPassword.getText().toString());
                                     showProgress(false);
                                 } else

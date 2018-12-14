@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ public class DisplayActivity extends AppCompatActivity {
     EditText editTextOriginalWord;
     TextView textViewTranslatedWord, textViewSentiment;
     SeekBar seekBarSentiment;
+    ImageButton imageButtonPlayPronunciation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,7 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView =  findViewById(R.id.recycler_view);
         seekBarSentiment = findViewById(R.id.seekBarSentiment);
         textViewSentiment = findViewById(R.id.textViewSentiment);
+        imageButtonPlayPronunciation = findViewById(R.id.playPronunciation);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -192,6 +195,13 @@ public class DisplayActivity extends AppCompatActivity {
             }
         });
 
+        imageButtonPlayPronunciation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         if(!isConnected()){
             Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
         }
@@ -212,7 +222,7 @@ public class DisplayActivity extends AppCompatActivity {
         else{
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-            wordUrl = "http://i2hub.tarc.edu.my:8117/selectSpecWord.php?";
+            wordUrl = getString(R.string.url_selectSpecWord);
             wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
             wordUrl += "&originalLanguage="+translateFromList.getSelectedItem().toString();
             wordUrl += "&translatedLanguage="+translateToList.getSelectedItem().toString();

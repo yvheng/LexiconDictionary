@@ -26,6 +26,7 @@
     <string name="text_language">Language</string>
     <string name="text_target">Target</string>
     <string name="text_photo">Photo:</string>
+    <string name="text_relatedPhoto">Related Photo</string>
     <string name="text_sentiment">Sentiment Strength</string>
     <string name="text_negative">Negative</string>
     <string name="text_positive">Positive</string>
@@ -39,6 +40,7 @@
     <string name="text_yes">Yes</string>
     <string name="text_no">No</string>
     <string name="text_pronunciation">Pronunciation:</string>
+    <string name="text_relatedPronunciation">Related Pronunciation</string>
 
     <!-- Button texts -->
     <string name="button_add">Add</string>
@@ -61,4 +63,16 @@
     <string name="action_sign_up">Sign Up</string>
     <string name="error_invalid_register">Username is used</string>
 
+    <!-- Strings related to image content description -->
+    <string name="contentDesc_relatedPhoto">Photo related to the text</string>
+    <string name="contentDesc_relatedPronunciation">Pronunciation related to the text</string>
+
+    <!-- Strings related to url -->
+    <string name="url_checkUser">http://i2hub.tarc.edu.my:8117/checkUser.php?</string>
+    <string name="url_selectSpecImage">http://i2hub.tarc.edu.my:8117/selectSpecImage.php?</string>
+    <string name="url_selectSpecUser">http://i2hub.tarc.edu.my:8117/selectSpecUser.php?</string>
+    <string name="url_selectSpecWord">http://i2hub.tarc.edu.my:8117/selectSpecWord.php?</string>
+    <string name="url_writeAttachment">http://i2hub.tarc.edu.my:8117/writeAttachment.php?</string>
+    <string name="url_writeUser">http://i2hub.tarc.edu.my:8117/writeUser.php?</string>
+    <string name="url_writeWord">http://i2hub.tarc.edu.my:8117/writeWord.php?</string>
 </resources>

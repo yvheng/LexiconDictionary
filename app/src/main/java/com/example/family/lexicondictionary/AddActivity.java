@@ -7,17 +7,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +39,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.family.lexicondictionary.Model.Attachment;
 import com.example.family.lexicondictionary.Model.Word;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,11 +66,16 @@ import static com.example.family.lexicondictionary.LoginActivity.userIDKey;
 
 public class AddActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose
+    final static int chooseImageKey= 100;
+    final static int chooseVoiceKey= 101;
 
-    TextView textViewTitle, textViewOriginalWord,textViewTranslateFrom, textViewTranslateTo;
+    TextView textViewTitle, textViewOriginalWord,textViewTranslateFrom, textViewTranslateTo,
+        textViewImageFileName, textViewVoiceFileName;
     EditText editTextTranslatedWord;
     View addingProgress, addingForm;
     Word word;
+    Attachment attachment;
+    Button buttonGallery, buttonVoice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +95,17 @@ public class AddActivity extends AppCompatActivity {
         word = new Word(0, originalWord, "", translateFrom,
                 translateTo,"", null,userID, userID);
 
+        textViewTitle = findViewById(R.id.textViewTitle);
         textViewTranslateFrom = findViewById(R.id.textViewTranslateFrom);
         textViewTranslateTo = findViewById(R.id.textViewTranslateTo);
         textViewOriginalWord = findViewById(R.id.textViewOriginal);
         editTextTranslatedWord = findViewById(R.id.editTextTranslated);
         addingProgress = findViewById(R.id.addingProgress);
         addingForm = findViewById(R.id.addingForm);
+        buttonGallery = findViewById(R.id.buttonGallery);
+        buttonVoice = findViewById(R.id.buttonVoice);
+        textViewImageFileName = findViewById(R.id.textViewImageFileName);
+        textViewVoiceFileName = findViewById(R.id.textViewVoiceFileName);
 
         showProgress(false);
 
@@ -92,7 +119,7 @@ public class AddActivity extends AppCompatActivity {
                     if(!(editTextTranslatedWord.getText().toString().equals("")||
                             editTextTranslatedWord.getText().toString().equals(" "))) {
                         showProgress(true);
-                        String url = "http://i2hub.tarc.edu.my:8117/writeWord.php?";
+                        String url = getString(R.string.url_writeWord);
                         word.setTranslatedContent(editTextTranslatedWord.getText().toString());
 
                         makeServiceCallAddWord(getApplicationContext(), url, word);
@@ -105,7 +132,24 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        textViewTitle = findViewById(R.id.textViewTitle);
+        buttonGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select image"),chooseImageKey);
+            }
+        });
+
+        buttonVoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("audio/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select audio"),chooseVoiceKey);
+            }
+        });
 
         String status = extras.getString("STATUS");
         try {
@@ -120,6 +164,51 @@ public class AddActivity extends AppCompatActivity {
 
         }
         setFields(originalWord, translateFrom, translateTo);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //InputStream inputStream;
+        if (requestCode == chooseImageKey && resultCode == Activity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(getApplicationContext(), "No image selected.",Toast.LENGTH_SHORT).show();
+                return;
+            }else {/*
+                try {*/
+                    //inputStream = this.getContentResolver().openInputStream(data.getData());
+                    Uri uri = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        textViewImageFileName.setText(uri.toString());
+
+                        String photo = getStringImage(bitmap);
+                        /*//Display image
+                        ImageView imageView = findViewById(R.id.imageViewPreview);
+                        imageView.setImageBitmap(bitmap);*/
+                        attachment.setPhoto(photo);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }/*
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(getApplicationContext(), "File not found.", Toast.LENGTH_SHORT).show();
+                }*/
+            }
+        }
+        if(requestCode == chooseVoiceKey && resultCode == Activity.RESULT_OK){
+            if (data == null) {
+                Toast.makeText(getApplicationContext(), "No voice file selected.",Toast.LENGTH_SHORT).show();
+                return;
+            }else {
+                Uri uri = data.getData();
+                textViewVoiceFileName.setText(uri.toString());
+                File audioFile = new File(uri.toString());
+                String audio = getStringAudio(audioFile);
+                attachment.setPronunciation(audio);
+            }
+        }
+        if(resultCode == Activity.RESULT_CANCELED)
+            Toast.makeText(getApplicationContext(), "Operation cancelled, no file selected.", Toast.LENGTH_SHORT).show();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -160,10 +249,19 @@ public class AddActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            showProgress(false);
-                            Intent returnIntent = new Intent();
-                            setResult(Activity.RESULT_OK, returnIntent);
-                            finish();
+                            //check if attachment is chose
+                            if(attachment.getPhoto()==null||
+                                    attachment.getPronunciation()==null){
+                                showProgress(false);
+                                Intent returnIntent = new Intent();
+                                setResult(Activity.RESULT_OK, returnIntent);
+                                finish();
+                            }else {
+                                //attachment = new Attachment(); //attachment is added separately in onActivityResult
+                                makeServiceCallAddAttachment(getApplicationContext(),
+                                        getString(R.string.url_writeAttachment),
+                                        attachment);
+                            }
                         }
                     },
                     new Response.ErrorListener() {
@@ -181,6 +279,52 @@ public class AddActivity extends AppCompatActivity {
                     params.put("originalLanguage", word.getOriginalLanguage());
                     params.put("translatedLanguage", word.getTranslatedLanguage());
                     params.put("userID", String.valueOf(word.getUserID()));
+
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void makeServiceCallAddAttachment(Context context, String url, final Attachment attachment) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            showProgress(false);
+                            Intent returnIntent = new Intent();
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("photo", attachment.getPhoto());
+                    params.put("pronunciation", attachment.getPronunciation());
+                    params.put("wordID", String.valueOf(attachment.getWordID()));
 
                     return params;
                 }
@@ -221,6 +365,51 @@ public class AddActivity extends AppCompatActivity {
         }catch(Exception e){
             textViewTranslateFrom.setText("");
             textViewTranslateTo.setText("");
+        }
+    }
+
+    public String getStringImage(Bitmap bmp) {
+        //encode image to base64
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
+
+    public String getStringAudio(File file){
+        //encode audio to base64
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] audioBytes = baos.toByteArray();
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] buf = new byte[1024];
+            int n;
+            while (-1 != (n = fis.read(buf)))
+                baos.write(buf, 0, n);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return Base64.encodeToString(audioBytes, Base64.DEFAULT);
+    }
+
+    public static Bitmap getImageString(String input){
+        //decode image to base64
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    public static void getAudioString(String input){
+        byte[] decoded = Base64.decode(input, Base64.DEFAULT);
+        try
+        {
+            File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
+            FileOutputStream os = new FileOutputStream(file, true);
+            os.write(decoded);
+            os.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 

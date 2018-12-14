@@ -281,7 +281,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void requestUser(final String username, final String password){
-        String url = "http://i2hub.tarc.edu.my:8117/selectSpecUser.php?";
+        String url = getString(R.string.url_selectSpecUser);
 
         //PreExecute
         if (!isConnected())

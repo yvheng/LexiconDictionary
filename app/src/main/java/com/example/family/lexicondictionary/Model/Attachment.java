@@ -1,16 +1,14 @@
 package com.example.family.lexicondictionary.Model;
 
-import java.sql.Blob;
-
 public class Attachment {
     private int id;
-    private Blob photo, pronunciation;
+    private String photo, pronunciation;
     private int wordID;
 
     public Attachment() {
     }
 
-    public Attachment(int id, Blob photo, Blob pronunciation, int wordID) {
+    public Attachment(int id, String photo, String pronunciation, int wordID) {
         this.id = id;
         this.photo = photo;
         this.pronunciation = pronunciation;
@@ -21,8 +19,8 @@ public class Attachment {
     public String toString() {
         return "Attachment{" +
                 "id=" + id +
-                ", photo=" + photo +
-                ", pronunciation=" + pronunciation +
+                ", photo='" + photo + '\'' +
+                ", pronunciation='" + pronunciation + '\'' +
                 ", wordID=" + wordID +
                 '}';
     }
@@ -35,19 +33,19 @@ public class Attachment {
         this.id = id;
     }
 
-    public Blob getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Blob photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
-    public Blob getPronunciation() {
+    public String getPronunciation() {
         return pronunciation;
     }
 
-    public void setPronunciation(Blob pronunciation) {
+    public void setPronunciation(String pronunciation) {
         this.pronunciation = pronunciation;
     }
 

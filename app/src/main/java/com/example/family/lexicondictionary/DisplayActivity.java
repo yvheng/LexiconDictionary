@@ -2,10 +2,13 @@ package com.example.family.lexicondictionary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,11 +39,14 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.family.lexicondictionary.Adapter.ImageData;
+import com.example.family.lexicondictionary.Model.Attachment;
 import com.example.family.lexicondictionary.Model.Word;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +69,7 @@ public class DisplayActivity extends AppCompatActivity {
     //List<Word> wordList;
     Word word;
     String wordUrl;
+    Attachment attachment;
 
     Spinner translateFromList, translateToList;
     RecyclerView mRecyclerView;
@@ -69,6 +78,7 @@ public class DisplayActivity extends AppCompatActivity {
     TextView textViewTranslatedWord, textViewSentiment;
     SeekBar seekBarSentiment;
     ImageButton imageButtonPlayPronunciation;
+    ImageView imageViewPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +95,7 @@ public class DisplayActivity extends AppCompatActivity {
         seekBarSentiment = findViewById(R.id.seekBarSentiment);
         textViewSentiment = findViewById(R.id.textViewSentiment);
         imageButtonPlayPronunciation = findViewById(R.id.playPronunciation);
+        imageViewPhoto = findViewById(R.id.imageViewPhoto);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -164,6 +175,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 textViewTranslatedWord.setText("");
+                imageViewPhoto.setImageResource(R.mipmap.no_photo);
             }
 
             @Override
@@ -198,6 +210,7 @@ public class DisplayActivity extends AppCompatActivity {
         imageButtonPlayPronunciation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ToDo: Play audio file
 
             }
         });
@@ -248,6 +261,7 @@ public class DisplayActivity extends AppCompatActivity {
 
                                 //set retrieved word to the textView
                                 textViewTranslatedWord.setText(word.getTranslatedContent());
+                                requestImage();
                             } catch (NullPointerException e) {
                                 Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
                             }catch(Exception e){
@@ -257,6 +271,57 @@ public class DisplayActivity extends AppCompatActivity {
                                             editTextOriginalWord.getText().toString().equals(" ")))
                                         noResult();
                                 }
+                                else
+                                    Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
+    }
+
+    public void requestImage(){
+        if(!isConnected())
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        else{
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            wordUrl = getString(R.string.url_selectSpecImage);
+            wordUrl += "wordID="+word.getId();
+
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(wordUrl,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                JSONObject recordResponse = (JSONObject) response.get(0);
+                                int id = recordResponse.getInt("id");
+                                String photo = recordResponse.getString("photo");
+                                String pronunciation = recordResponse.getString("pronunciation");
+
+                                attachment = new Attachment(id, photo, pronunciation, word.getId());
+
+                                //decode photo and pronunciation
+                                Bitmap bitmap = getImageString(photo);
+                                getAudioString(pronunciation);
+
+                                //set retrieved image to the imageView
+                                imageViewPhoto.setImageBitmap(bitmap);
+
+                                //set audio to play
+                                //File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
+
+                            } catch (NullPointerException e) {
+                                Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+                            }catch(Exception e){
+                                if(e.getMessage().equals("Index 0 out of range [0..0)"))
+                                    Toast.makeText(getApplicationContext(), "This translation has no image.", Toast.LENGTH_SHORT).show();
                                 else
                                     Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -326,5 +391,26 @@ public class DisplayActivity extends AppCompatActivity {
         intent.putExtra(translatedFromKey, translateFrom);
         intent.putExtra(translatedToKey, translateTo);
         startActivity(intent);
+    }
+
+    public static Bitmap getImageString(String input){
+        //decode image to base64
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
+
+    public static void getAudioString(String input){
+        byte[] decoded = Base64.decode(input, Base64.DEFAULT);
+        try
+        {
+            File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
+            FileOutputStream os = new FileOutputStream(file, true);
+            os.write(decoded);
+            os.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

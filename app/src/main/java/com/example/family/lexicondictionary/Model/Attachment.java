@@ -6,6 +6,10 @@ public class Attachment {
     private int wordID;
 
     public Attachment() {
+        this.id = 0;
+        this.photo = "";
+        this.pronunciation = "";
+        this.wordID = 0;
     }
 
     public Attachment(int id, String photo, String pronunciation, int wordID) {

@@ -73,6 +73,7 @@
     <string name="url_selectSpecUser">http://i2hub.tarc.edu.my:8117/selectSpecUser.php?</string>
     <string name="url_selectSpecWord">http://i2hub.tarc.edu.my:8117/selectSpecWord.php?</string>
     <string name="url_writeAttachment">http://i2hub.tarc.edu.my:8117/writeAttachment.php?</string>
+    <string name="url_writeAttachmentG">http://i2hub.tarc.edu.my:8117/writeAttachmentG.php?</string>
     <string name="url_writeUser">http://i2hub.tarc.edu.my:8117/writeUser.php?</string>
     <string name="url_writeWord">http://i2hub.tarc.edu.my:8117/writeWord.php?</string>
 </resources>

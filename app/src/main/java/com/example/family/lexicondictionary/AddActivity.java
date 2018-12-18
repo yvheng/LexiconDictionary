@@ -52,6 +52,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,8 +75,9 @@ public class AddActivity extends AppCompatActivity {
     EditText editTextTranslatedWord;
     View addingProgress, addingForm;
     Word word;
-    Attachment attachment;
+    Attachment attachment = new Attachment();
     Button buttonGallery, buttonVoice;
+    String wordUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,9 +185,6 @@ public class AddActivity extends AppCompatActivity {
                         textViewImageFileName.setText(uri.toString());
 
                         String photo = getStringImage(bitmap);
-                        /*//Display image
-                        ImageView imageView = findViewById(R.id.imageViewPreview);
-                        imageView.setImageBitmap(bitmap);*/
                         attachment.setPhoto(photo);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -250,17 +249,20 @@ public class AddActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             //check if attachment is chose
-                            if(attachment.getPhoto()==null||
-                                    attachment.getPronunciation()==null){
+                            if(attachment.getPhoto()==null&&
+                                    attachment.getPronunciation()==null){//if one of/both photo and pronunciation chose
                                 showProgress(false);
                                 Intent returnIntent = new Intent();
                                 setResult(Activity.RESULT_OK, returnIntent);
                                 finish();
                             }else {
-                                //attachment = new Attachment(); //attachment is added separately in onActivityResult
+                                //retrieve wordID of the word added just now
+                                checkWord();
+                                //add attachment set to the word
                                 makeServiceCallAddAttachment(getApplicationContext(),
                                         getString(R.string.url_writeAttachment),
                                         attachment);
+                                //makeServiceCallAddAttachment()G;
                             }
                         }
                     },
@@ -269,6 +271,7 @@ public class AddActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             showProgress(false);
                             Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                            onBackPressed();
                         }
                     }) {
                 @Override
@@ -296,6 +299,82 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    public void checkWord(){
+        if(!isConnected())
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        else{
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            wordUrl = getString(R.string.url_selectSpecWord);
+            wordUrl += "originalContent="+word.getOriginalContent();
+            wordUrl += "&originalLanguage="+word.getOriginalLanguage();
+            wordUrl += "&translatedLanguage="+word.getTranslatedLanguage();
+
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(wordUrl,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                JSONObject recordResponse = (JSONObject) response.get(0);
+                                int id = Integer.parseInt(recordResponse.getString("id"));
+                                /*String originalContent = recordResponse.getString("originalContent");
+                                String translatedContent = recordResponse.getString("translatedContent");
+                                String originalLanguage = recordResponse.getString("originalLanguage");
+                                String translatedLanguage = recordResponse.getString("translatedLanguage");
+                                String status = recordResponse.getString("status");
+                                Date dateTimeAdded = Date.valueOf(recordResponse.getString("dateTimeAdded"));
+                                int userID = Integer.parseInt(recordResponse.getString("userID"));
+                                int lastEditUserID = Integer.parseInt(recordResponse.getString("lastEditUserID"));*/
+
+                                attachment.setWordID(id);
+                            } catch (NullPointerException e) {
+                                Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+                            }catch(Exception e){
+                                Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
+    }
+
+    public void makeServiceCallAddAttachmentG() {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        String url = getString(R.string.url_writeAttachmentG);
+        url += "wordID=" + attachment.getWordID();
+        if (!(attachment.getPhoto().equals("")))
+            url += "&photo=" + attachment.getPhoto();
+        if (!(attachment.getPronunciation().equals("")))
+            url += "&pronunciation=" + attachment.getPronunciation();
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        showProgress(false);
+                        Intent returnIntent = new Intent();
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        showProgress(false);
+                        Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                    }
+                });
+        queue.add(jsonObjectRequest);
+    }
+
     public void makeServiceCallAddAttachment(Context context, String url, final Attachment attachment) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -317,14 +396,17 @@ public class AddActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             showProgress(false);
                             Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                            onBackPressed();
                         }
                     }) {
                 @Override
                 protected Map<String, String> getParams() {
                     Map<String, String> params = new HashMap<>();
-                    params.put("photo", attachment.getPhoto());
-                    params.put("pronunciation", attachment.getPronunciation());
                     params.put("wordID", String.valueOf(attachment.getWordID()));
+                    //if (!(attachment.getPhoto().equals("")))
+                        params.put("photo", attachment.getPhoto());
+                    //if (!(attachment.getPronunciation().equals("")))
+                        params.put("pronunciation", attachment.getPronunciation());
 
                     return params;
                 }
@@ -336,6 +418,7 @@ public class AddActivity extends AppCompatActivity {
                     return params;
                 }
             };
+            postRequest.setShouldCache(false);
             queue.add(postRequest);
         } catch (Exception e) {
             e.printStackTrace();
@@ -390,27 +473,6 @@ public class AddActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return Base64.encodeToString(audioBytes, Base64.DEFAULT);
-    }
-
-    public static Bitmap getImageString(String input){
-        //decode image to base64
-        byte[] decodedByte = Base64.decode(input, 0);
-        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
-    }
-
-    public static void getAudioString(String input){
-        byte[] decoded = Base64.decode(input, Base64.DEFAULT);
-        try
-        {
-            File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
-            FileOutputStream os = new FileOutputStream(file, true);
-            os.write(decoded);
-            os.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     @Override

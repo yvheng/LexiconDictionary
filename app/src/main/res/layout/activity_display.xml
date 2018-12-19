@@ -175,7 +175,7 @@
                 android:layout_gravity="center"
                 android:max="@integer/seekBarMax"
                 android:min="@integer/seekBarMin"
-                tools:targetApi="o" />
+                tools:targetApi="o"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -197,7 +197,9 @@
                 android:layout_height="50dp"
                 android:isIndicator="true"
                 android:numStars="@integer/ratingStarsNum"
-                android:padding="3dp" />
+                android:padding="3dp"
+                style="?android:attr/ratingBarStyleSmall"
+                android:stepSize="0.5"/>
 
             <Space
                 android:layout_width="match_parent"

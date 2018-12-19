@@ -1,6 +1,7 @@
 package com.example.family.lexicondictionary.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,14 +16,14 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private List<String> emotionName;
-    private List<ImageData> imageData;
+    private List<Bitmap> emoticon;
     private LayoutInflater layoutInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    public RecyclerViewAdapter(Context context, List<String> emotionName, List<ImageData> imageData) {
+    public RecyclerViewAdapter(Context context, List<String> emotionName, List<Bitmap> emoticon) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.imageData = imageData;
+        this.emoticon = emoticon;
         this.emotionName = emotionName;
     }
 
@@ -38,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // binds the data to the view and textview in each row
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        viewHolder.emotion.setImageResource(imageData.get(position).getImageUrl());
+        viewHolder.emotion.setImageBitmap(emoticon.get(position));
         viewHolder.emotionName.setText(emotionName.get(position));
     }
 

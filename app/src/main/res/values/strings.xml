@@ -70,6 +70,7 @@
     <!-- Strings related to url -->
     <string name="url_checkUser">http://i2hub.tarc.edu.my:8117/checkUser.php?</string>
     <string name="url_selectSpecImage">http://i2hub.tarc.edu.my:8117/selectSpecImage.php?</string>
+    <string name="url_selectSpecDetail">http://i2hub.tarc.edu.my:8117/selectSpecDetail.php?</string>
     <string name="url_selectSpecUser">http://i2hub.tarc.edu.my:8117/selectSpecUser.php?</string>
     <string name="url_selectSpecWord">http://i2hub.tarc.edu.my:8117/selectSpecWord.php?</string>
     <string name="url_writeAttachment">http://i2hub.tarc.edu.my:8117/writeAttachment.php?</string>

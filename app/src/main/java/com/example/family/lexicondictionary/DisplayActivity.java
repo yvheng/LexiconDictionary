@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,21 +23,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.family.lexicondictionary.Adapter.ImageData;
+import com.example.family.lexicondictionary.Adapter.RecyclerViewAdapter;
 import com.example.family.lexicondictionary.Model.Attachment;
+import com.example.family.lexicondictionary.Model.Detail;
 import com.example.family.lexicondictionary.Model.Word;
 
 import org.json.JSONArray;
@@ -48,15 +45,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
-    int seekBarCurrent = 0;
+    List<String> emotion = new ArrayList<String>();
+    List<Bitmap> emoticon = new ArrayList<Bitmap>();
+    int seekBarCurrent = 10000;
     double sentimentStrength=0;
     final static String addStatus= "ADD_STATUS";
     final static String editStatus= "EDIT_STATUS";
@@ -70,6 +68,7 @@ public class DisplayActivity extends AppCompatActivity {
     Word word;
     String wordUrl;
     Attachment attachment;
+    Detail detail;
 
     Spinner translateFromList, translateToList;
     RecyclerView mRecyclerView;
@@ -79,9 +78,12 @@ public class DisplayActivity extends AppCompatActivity {
     SeekBar seekBarSentiment;
     ImageButton imageButtonPlayPronunciation;
     ImageView imageViewPhoto;
+    RatingBar ratingBarAccuracy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //ToDo: Add showProgress function in DisplayActivity
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
@@ -96,6 +98,7 @@ public class DisplayActivity extends AppCompatActivity {
         textViewSentiment = findViewById(R.id.textViewSentiment);
         imageButtonPlayPronunciation = findViewById(R.id.playPronunciation);
         imageViewPhoto = findViewById(R.id.imageViewPhoto);
+        ratingBarAccuracy = findViewById(R.id.ratingBar);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -104,9 +107,9 @@ public class DisplayActivity extends AppCompatActivity {
         seekBarSentiment.setProgress(seekBarCurrent);
         sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
         //sentimentStrength = seekBarCurrent;
-        textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
+        textViewSentiment.setText(String.format("%.4f",sentimentStrength));
 
-        seekBarSentiment.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        /*seekBarSentiment.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 seekBarCurrent = progress;
@@ -124,7 +127,18 @@ public class DisplayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
+        });*/
+
+        //Disable input from user
+        seekBarSentiment.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
         });
+
+        //rating by default
+        ratingBarAccuracy.setRating(2.5f);
 
         //Array adapter for spinner
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
@@ -165,6 +179,8 @@ public class DisplayActivity extends AppCompatActivity {
         //Setting layoutManager and divider to recyclerView
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+        loadEmotion();
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), emotion, emoticon));
         /*
         RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(this,
                 emotionNameList, emotionList);
@@ -218,6 +234,18 @@ public class DisplayActivity extends AppCompatActivity {
         if(!isConnected()){
             Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void loadEmotion(){
+        emotion.clear();
+        emoticon.clear();
+
+        emotion.add("Happy");
+        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.happy));
+        emotion.add("Sad");
+        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.sad));
+        emotion.add("Smile");
+        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.smile));
     }
 
     private boolean isConnected() {
@@ -292,10 +320,10 @@ public class DisplayActivity extends AppCompatActivity {
         else{
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-            wordUrl = getString(R.string.url_selectSpecImage);
-            wordUrl += "wordID="+word.getId();
+            String url = getString(R.string.url_selectSpecImage);
+            url += "wordID="+word.getId();
 
-            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(wordUrl,
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
@@ -316,12 +344,62 @@ public class DisplayActivity extends AppCompatActivity {
 
                                 //set audio to play
                                 //File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
-
-                            } catch (NullPointerException e) {
-                                Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+                                requestDetail();
                             }catch(Exception e){
                                 if(e.getMessage().equals("Index 0 out of range [0..0)"))
                                     Toast.makeText(getApplicationContext(), "This translation has no image.", Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
+    }
+
+    public void requestDetail(){
+        if(!isConnected())
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        else{
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            String url = getString(R.string.url_selectSpecDetail);
+            url += "wordID="+word.getId();
+
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                JSONObject recordResponse = (JSONObject) response.get(0);
+                                int id = recordResponse.getInt("id");
+                                double sentiment = recordResponse.getDouble("sentiment");
+                                String emotion = recordResponse.getString("emotion");
+                                double accuracy = recordResponse.getDouble("accuracy");
+
+                                detail = new Detail(id, sentiment, emotion, accuracy, word.getId());
+
+                                //setting into their respective fields
+                                //seekBar
+                                seekBarCurrent = (int)(sentiment*20000);
+                                seekBarSentiment.setProgress(seekBarCurrent);
+                                sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
+                                textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
+
+                                //emotion
+                                //ToDo: setting emotion?
+
+                                //ratingBar
+                                ratingBarAccuracy.setRating((float)accuracy);
+                            }catch(Exception e){
+                                if(e.getMessage().equals("Index 0 out of range [0..0)"))
+                                    Toast.makeText(getApplicationContext(), "This translation has no details.", Toast.LENGTH_SHORT).show();
                                 else
                                     Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }

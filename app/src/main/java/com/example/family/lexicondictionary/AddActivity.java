@@ -70,9 +70,9 @@ public class AddActivity extends AppCompatActivity {
     final static int chooseImageKey= 100;
     final static int chooseVoiceKey= 101;
 
-    TextView textViewTitle, textViewOriginalWord,textViewTranslateFrom, textViewTranslateTo,
+    TextView textViewTitle,textViewTranslateFrom, textViewTranslateTo,
         textViewImageFileName, textViewVoiceFileName;
-    EditText editTextTranslatedWord;
+    EditText editTextTranslatedWord, editTextOriginal;
     View addingProgress, addingForm;
     Word word;
     Attachment attachment = new Attachment();
@@ -88,19 +88,20 @@ public class AddActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         String originalWord = extras.getString(originalWordKey);
+        String translatedWord = extras.getString(translatedWordKey);
         String translateFrom = extras.getString(translatedFromKey);
         String translateTo = extras.getString(translatedToKey);
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         int userID = prefs.getInt(userIDKey, 0);
 
-        word = new Word(0, originalWord, "", translateFrom,
+        word = new Word(0, originalWord, translatedWord, translateFrom,
                 translateTo,"", null,userID, userID);
 
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewTranslateFrom = findViewById(R.id.textViewTranslateFrom);
         textViewTranslateTo = findViewById(R.id.textViewTranslateTo);
-        textViewOriginalWord = findViewById(R.id.textViewOriginal);
+        editTextOriginal = findViewById(R.id.editTextOriginal);
         editTextTranslatedWord = findViewById(R.id.editTextTranslated);
         addingProgress = findViewById(R.id.addingProgress);
         addingForm = findViewById(R.id.addingForm);
@@ -119,14 +120,16 @@ public class AddActivity extends AppCompatActivity {
                 if (isConnected()) {
                     //check if translated word is empty
                     if(!(editTextTranslatedWord.getText().toString().equals("")||
-                            editTextTranslatedWord.getText().toString().equals(" "))) {
+                            editTextTranslatedWord.getText().toString().equals(" ")||
+                            editTextOriginal.getText().toString().equals("")||
+                            editTextOriginal.getText().toString().equals(" "))) {
                         showProgress(true);
                         String url = getString(R.string.url_writeWord);
                         word.setTranslatedContent(editTextTranslatedWord.getText().toString());
 
                         makeServiceCallAddWord(getApplicationContext(), url, word);
                     }else{
-                        Toast.makeText(getApplicationContext(), "Translated Word is empty.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Required field is empty.", Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     Toast.makeText(getApplicationContext(), "No Internet connection.", Toast.LENGTH_SHORT).show();
@@ -157,15 +160,19 @@ public class AddActivity extends AppCompatActivity {
         try {
             if (status.equals(addStatus)) {
                 textViewTitle.setText(R.string.title_addNewEntry);
-            } else if (status.equals(editStatus)) {
+                editTextOriginal.setEnabled(false);
+            }
+            if (status.equals(editStatus)) {
                 textViewTitle.setText(R.string.title_editEntry);
+                editTextOriginal.setEnabled(true);
             }
         }catch(NullPointerException e){
 
         }catch(Exception e){
 
         }
-        setFields(originalWord, translateFrom, translateTo);
+
+        setFields(originalWord, translatedWord,translateFrom, translateTo);
     }
 
     @Override
@@ -344,37 +351,6 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    public void makeServiceCallAddAttachmentG() {
-        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-
-        String url = getString(R.string.url_writeAttachmentG);
-        url += "wordID=" + attachment.getWordID();
-        if (!(attachment.getPhoto().equals("")))
-            url += "&photo=" + attachment.getPhoto();
-        if (!(attachment.getPronunciation().equals("")))
-            url += "&pronunciation=" + attachment.getPronunciation();
-
-        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        showProgress(false);
-                        Intent returnIntent = new Intent();
-                        setResult(Activity.RESULT_OK, returnIntent);
-                        finish();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        showProgress(false);
-                        Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                        onBackPressed();
-                    }
-                });
-        queue.add(jsonObjectRequest);
-    }
-
     public void makeServiceCallAddAttachment(Context context, String url, final Attachment attachment) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -434,21 +410,13 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
-    private void setFields(String originalWord , String translateFrom, String translateTo){
-        try{
-            textViewOriginalWord.setText(originalWord);
-        }catch(Exception e){
-            textViewOriginalWord.setText("");
-        }
+    private void setFields(String originalWord , String translatedWord,String translateFrom, String translateTo){
+        //validated, will not be null, tryCatch is not needed
+        editTextOriginal.setText(originalWord);
+        editTextTranslatedWord.setText(translatedWord);
 
-        int i, u;
-        try {
-            textViewTranslateFrom.setText(translateFrom);
-            textViewTranslateTo.setText(translateTo);
-        }catch(Exception e){
-            textViewTranslateFrom.setText("");
-            textViewTranslateTo.setText("");
-        }
+        textViewTranslateFrom.setText(translateFrom);
+        textViewTranslateTo.setText(translateTo);
     }
 
     public String getStringImage(Bitmap bmp) {

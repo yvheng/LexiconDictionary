@@ -1,279 +1,303 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="12"
     tools:context="com.example.family.lexicondictionary.DisplayActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/displayProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="3dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/translateFrom"
+    <LinearLayout
+        android:id="@+id/displayForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context="com.example.family.lexicondictionary.DisplayActivity">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="0dp"
-            android:layout_toStartOf="@id/exchange"
-            android:layout_toLeftOf="@id/exchange"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
+            android:layout_height="0dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/exchange"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:background="@android:color/white"
-            android:contentDescription="@string/txt_exchangeDesc"
-            android:onClick="exchange"
-            android:padding="7dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@mipmap/exchange_button" />
-
-        <Spinner
-            android:id="@+id/translateTo"
-            android:layout_width="160dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="0dp"
-            android:layout_toEndOf="@id/exchange"
-            android:layout_toRightOf="@id/exchange"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
-    </RelativeLayout>
-
-    <EditText
-        android:id="@+id/originalWord"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:ems="10"
-        android:gravity="start"
-        android:hint="@string/txt_enterText"
-        android:inputType="text|textAutoCorrect"
-        android:singleLine="false"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="81dp" />
-
-    <TextView
-        android:id="@+id/translatedWord"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_weight="1.5"
-        android:gravity="start"
-        android:textAlignment="textStart"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="18sp" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6.5"
-        android:fillViewport="true"
-        android:scrollbarStyle="insideInset"
-        android:scrollbars="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Space
+            <Spinner
+                android:id="@+id/translateFrom"
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="@string/text_sentiment"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/textViewSentiment"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:text=""
-                android:textAlignment="center"
-                android:textColor="@android:color/black"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="25dp">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginEnd="270dp"
-                    android:layout_marginRight="270dp"
-                    android:layout_toStartOf="@+id/textView3"
-                    android:layout_toLeftOf="@+id/textView3"
-                    android:gravity="start"
-                    android:text="@string/text_negative"
-                    android:textAlignment="textStart"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:gravity="end"
-                    android:text="@string/text_positive"
-                    android:textAlignment="textEnd"
-                    android:textColor="@android:color/black" />
-
-            </RelativeLayout>
-
-            <SeekBar
-                android:id="@+id/seekBarSentiment"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:max="@integer/seekBarMax"
-                android:min="@integer/seekBarMin"
-                tools:targetApi="o"/>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/text_rating"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:isIndicator="true"
-                android:numStars="@integer/ratingStarsNum"
-                android:padding="3dp"
-                style="?android:attr/ratingBarStyleSmall"
-                android:stepSize="0.5"/>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/text_emotion"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-
-            <TextView
-                android:id="@+id/textView11"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/text_relatedPronunciation"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="5dp"
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toStartOf="@id/exchange"
+                android:layout_toLeftOf="@id/exchange"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
 
             <ImageButton
-                android:id="@+id/playPronunciation"
+                android:id="@+id/exchange"
                 android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
                 android:background="@android:color/white"
+                android:contentDescription="@string/txt_exchangeDesc"
+                android:onClick="exchange"
+                android:padding="7dp"
                 android:scaleType="fitCenter"
-                android:layout_gravity="center"
-                android:src="@mipmap/play_pronunciation"
-                android:contentDescription="@string/text_relatedPronunciation"/>
+                app:srcCompat="@mipmap/exchange_button" />
 
-            <TextView
-                android:id="@+id/textView10"
+            <Spinner
+                android:id="@+id/translateTo"
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@id/exchange"
+                android:layout_toRightOf="@id/exchange"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/originalWord"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:ems="10"
+            android:gravity="start"
+            android:hint="@string/txt_enterText"
+            android:inputType="text|textAutoCorrect"
+            android:singleLine="false"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="81dp" />
+
+        <TextView
+            android:id="@+id/translatedWord"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1.5"
+            android:gravity="start"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6.5"
+            android:fillViewport="true"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:text="@string/text_relatedPhoto"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="3dp"
-                android:textSize="18sp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <!--In future changed to recycleView (horizontal) and use adapters to display multiple photos-->
-            <ImageView
-                android:id="@+id/imageViewPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@android:color/white"
-                android:contentDescription="@string/contentDesc_relatedPhoto"
-                android:scaleType="fitCenter"
-                app:srcCompat="@mipmap/no_photo" />
-        </LinearLayout>
-    </ScrollView>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp" />
 
-    <Button
-        android:id="@+id/validateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="end"
-        android:layout_weight="1"
-        android:onClick="validate"
-        android:text="@string/text_validate" />
-</LinearLayout>
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/text_sentiment"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textViewSentiment"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginEnd="270dp"
+                        android:layout_marginRight="270dp"
+                        android:layout_toStartOf="@+id/textView3"
+                        android:layout_toLeftOf="@+id/textView3"
+                        android:gravity="start"
+                        android:text="@string/text_negative"
+                        android:textAlignment="textStart"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="end"
+                        android:text="@string/text_positive"
+                        android:textAlignment="textEnd"
+                        android:textColor="@android:color/black" />
+
+                </RelativeLayout>
+
+                <SeekBar
+                    android:id="@+id/seekBarSentiment"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:max="@integer/seekBarMax"
+                    android:min="@integer/seekBarMin"
+                    tools:targetApi="o" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/text_rating"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:isIndicator="true"
+                    android:layout_gravity="center_horizontal"
+                    android:numStars="@integer/ratingStarsNum"
+                    android:padding="3dp"
+                    android:rating="2.5"
+                    android:stepSize="0.5" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/text_emotion"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="@string/text_relatedPronunciation"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/playPronunciation"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/white"
+                    android:contentDescription="@string/text_relatedPronunciation"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/play_pronunciation" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="3dp"
+                    android:gravity="center"
+                    android:text="@string/text_relatedPhoto"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <!--In future changed to recycleView (horizontal) and use adapters to display multiple photos-->
+                <ImageView
+                    android:id="@+id/imageViewPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@android:color/white"
+                    android:contentDescription="@string/contentDesc_relatedPhoto"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@mipmap/no_photo" />
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/validateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:onClick="validate"
+            android:text="@string/text_validate" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

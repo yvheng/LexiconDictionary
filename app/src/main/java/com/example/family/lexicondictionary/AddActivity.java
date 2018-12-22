@@ -22,11 +22,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,13 +73,17 @@ public class AddActivity extends AppCompatActivity {
     final static int chooseVoiceKey= 101;
 
     TextView textViewTitle,textViewTranslateFrom, textViewTranslateTo,
-        textViewImageFileName, textViewVoiceFileName;
+        textViewImageFileName, textViewVoiceFileName, textViewSentimentScore;
     EditText editTextTranslatedWord, editTextOriginal;
     View addingProgress, addingForm;
     Word word;
     Attachment attachment = new Attachment();
     Button buttonGallery, buttonVoice;
     String wordUrl;
+    SeekBar seekBarSentiment;
+
+    int seekBarCurrent = 10000;
+    double sentimentStrength=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +115,8 @@ public class AddActivity extends AppCompatActivity {
         buttonVoice = findViewById(R.id.buttonVoice);
         textViewImageFileName = findViewById(R.id.textViewImageFileName);
         textViewVoiceFileName = findViewById(R.id.textViewVoiceFileName);
+        /*seekBarSentiment = findViewById(R.id.seekBarSentiment);
+        textViewSentimentScore = findViewById(R.id.textViewSentimentScore);*/
 
         showProgress(false);
 
@@ -171,6 +179,36 @@ public class AddActivity extends AppCompatActivity {
         }catch(Exception e){
 
         }
+
+        /*seekBarSentiment.setMax(R.integer.seekBarMax);
+        *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            seekBarSentiment.setMin(R.integer.seekBarMin);
+        }*//*
+        seekBarSentiment.setProgress(R.integer.seekBarMax/2);
+        seekBarCurrent = R.integer.seekBarMax/2;
+        sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
+        //sentimentStrength = seekBarCurrent;
+        textViewSentimentScore.setText(String.format("%.4f",sentimentStrength));
+
+        //Disable input from user
+        seekBarSentiment.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                seekBarCurrent = progress;
+                sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
+                textViewSentimentScore.setText(String.format("%.4f",sentimentStrength));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                textViewSentimentScore.setText("");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });*/
 
         setFields(originalWord, translatedWord,translateFrom, translateTo);
     }

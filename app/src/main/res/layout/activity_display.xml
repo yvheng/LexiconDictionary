@@ -193,9 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:max="@integer/seekBarMax"
-                    android:min="@integer/seekBarMin"
-                    tools:targetApi="o" />
+                    android:max="@integer/seekBarMax" />
 
                 <Space
                     android:layout_width="match_parent"

@@ -41,6 +41,7 @@
     <string name="text_no">No</string>
     <string name="text_pronunciation">Pronunciation:</string>
     <string name="text_relatedPronunciation">Related Pronunciation</string>
+    <string name="text_email">Email</string>
 
     <!-- Button texts -->
     <string name="button_add">Add</string>

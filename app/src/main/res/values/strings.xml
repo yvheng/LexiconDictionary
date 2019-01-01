@@ -41,6 +41,11 @@
     <string name="text_no">No</string>
     <string name="text_pronunciation">Pronunciation:</string>
     <string name="text_relatedPronunciation">Related Pronunciation</string>
+    <string name="text_sentics">Sentics</string>
+    <string name="text_pleasantness">Pleasantness</string>
+    <string name="text_attention">Attention</string>
+    <string name="text_sensitivity">Sensitivity</string>
+    <string name="text_aptitude">Aptitude</string>
 
     <!-- Button texts -->
     <string name="button_add">Add</string>
@@ -71,6 +76,8 @@
     <string name="url_checkUser">http://i2hub.tarc.edu.my:8117/checkUser.php?</string>
     <string name="url_selectSpecImage">http://i2hub.tarc.edu.my:8117/selectSpecImage.php?</string>
     <string name="url_selectSpecDetail">http://i2hub.tarc.edu.my:8117/selectSpecDetail.php?</string>
+    <string name="url_selectSpecTDetail">http://i2hub.tarc.edu.my:8117/selectSpecTDetail.php?</string>
+    <string name="url_selectSpecTDetail2">http://i2hub.tarc.edu.my:8117/selectSpecTDetail2.php?</string>
     <string name="url_selectSpecUser">http://i2hub.tarc.edu.my:8117/selectSpecUser.php?</string>
     <string name="url_selectSpecWord">http://i2hub.tarc.edu.my:8117/selectSpecWord.php?</string>
     <string name="url_writeAttachment">http://i2hub.tarc.edu.my:8117/writeAttachment.php?</string>

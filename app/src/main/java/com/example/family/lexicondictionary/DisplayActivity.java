@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -47,9 +48,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -61,6 +64,7 @@ public class DisplayActivity extends AppCompatActivity {
     List<String> emotion = new ArrayList<String>();
     List<Bitmap> emoticon = new ArrayList<Bitmap>();
     int seekBarCurrent = 10000;
+    boolean noResult=false;
     double sentimentStrength=0;
     final static String addStatus= "ADD_STATUS";
     final static String editStatus= "EDIT_STATUS";
@@ -82,7 +86,7 @@ public class DisplayActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     Button validateButton;
     EditText editTextOriginalWord;
-    TextView textViewTranslatedWord, textViewSentiment;
+    TextView textViewTranslatedWord, textViewSentiment, textViewPleasantness, textViewAttention, textViewSensitivity, textViewAptitude, textViewNegative, textViewPositive;
     SeekBar seekBarSentiment;
     ImageButton imageButtonPlayPronunciation;
     ImageView imageViewPhoto;
@@ -109,6 +113,12 @@ public class DisplayActivity extends AppCompatActivity {
         ratingBarAccuracy = findViewById(R.id.ratingBar);
         displayProgress = findViewById(R.id.displayProgress);
         displayForm = findViewById(R.id.displayForm);
+        textViewPleasantness = findViewById(R.id.textViewPleasantness);
+        textViewAttention = findViewById(R.id.textViewAttention);
+        textViewSensitivity = findViewById(R.id.textViewSensitivity);
+        textViewAptitude = findViewById(R.id.textViewAptitude);
+        textViewNegative = findViewById(R.id.textViewNegative);
+        textViewPositive = findViewById(R.id.textViewPositive);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -119,6 +129,11 @@ public class DisplayActivity extends AppCompatActivity {
         sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
         //sentimentStrength = seekBarCurrent;
         textViewSentiment.setText(String.format("%.4f",sentimentStrength));
+
+        textViewPleasantness.setText("0.0000");
+        textViewAttention.setText("0.0000");
+        textViewSensitivity.setText("0.0000");
+        textViewAptitude.setText("0.0000");
 
         //Disable input from user
         seekBarSentiment.setOnTouchListener(new View.OnTouchListener() {
@@ -139,6 +154,7 @@ public class DisplayActivity extends AppCompatActivity {
         translateFromList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noResult=false;
                 translate();
             }
 
@@ -150,6 +166,7 @@ public class DisplayActivity extends AppCompatActivity {
         translateToList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                noResult=false;
                 translate();
             }
 
@@ -175,6 +192,15 @@ public class DisplayActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 textViewTranslatedWord.setText("");
                 imageViewPhoto.setImageResource(R.mipmap.no_photo);
+                textViewSentiment.setText("0.0000");
+                textViewPleasantness.setText("0.0000");
+                textViewAttention.setText("0.0000");
+                textViewSensitivity.setText("0.0000");
+                textViewAptitude.setText("0.0000");
+                seekBarSentiment.setProgress(R.integer.seekBarMax/2);
+                textViewPositive.setTypeface(null, Typeface.NORMAL);
+                textViewNegative.setTypeface(null, Typeface.NORMAL);
+                noResult=false;
             }
 
             @Override
@@ -187,22 +213,26 @@ public class DisplayActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 timer.cancel();
                 timer = new Timer();
-                timer.schedule(
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                //Check if the required field is empty
-                                if(!(editTextOriginalWord.getText()==null||
-                                        editTextOriginalWord.getText().toString().equals("")||
-                                        editTextOriginalWord.getText().toString().equals(" "))){
-                                    translate();
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "Original word is empty.",Toast.LENGTH_SHORT).show();
+                try {
+                    timer.schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    //Check if the required field is empty
+                                    if (!(editTextOriginalWord.getText() == null ||
+                                            editTextOriginalWord.getText().toString().equals("") ||
+                                            editTextOriginalWord.getText().toString().equals(" "))) {
+                                        translate();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Original word is empty.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        },
-                        DELAY
-                );
+                            },
+                            DELAY
+                    );
+                }catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -278,6 +308,11 @@ public class DisplayActivity extends AppCompatActivity {
 
             wordUrl = getString(R.string.url_selectSpecWord);
             wordUrl += "originalContent="+editTextOriginalWord.getText().toString();
+            try{
+                word.setOriginalContent(editTextOriginalWord.getText().toString());}
+            catch(NullPointerException e){
+
+            }
             wordUrl += "&originalLanguage="+translateFromList.getSelectedItem().toString();
             wordUrl += "&translatedLanguage="+translateToList.getSelectedItem().toString();
 
@@ -340,8 +375,10 @@ public class DisplayActivity extends AppCompatActivity {
                                 if(e.getMessage().equals("Index 0 out of range [0..0)")) {
                                     if(!(editTextOriginalWord.getText()==null||
                                             editTextOriginalWord.getText().toString().equals("")||
-                                            editTextOriginalWord.getText().toString().equals(" ")))
-                                        noResult();
+                                            editTextOriginalWord.getText().toString().equals(" "))){
+                                        noResult=true;
+                                        requestDetail();
+                                    }
                                 }
                                 else
                                     Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -394,8 +431,10 @@ public class DisplayActivity extends AppCompatActivity {
                                 requestDetail();
                             }catch(Exception e){
                                 showProgress(false);
-                                if(e.getMessage().equals("Index 0 out of range [0..0)"))
+                                if(e.getMessage().equals("Index 0 out of range [0..0)")) {
                                     Toast.makeText(getApplicationContext(), "This translation has no image.", Toast.LENGTH_SHORT).show();
+                                    requestDetail();
+                                }
                                 else
                                     Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
@@ -420,8 +459,9 @@ public class DisplayActivity extends AppCompatActivity {
         else{
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-            String url = getString(R.string.url_selectSpecDetail);
-            url += "wordID="+word.getId();
+            //String url = getString(R.string.url_selectSpecDetail);
+            String url = getString(R.string.url_selectSpecTDetail);
+            url += "text="+editTextOriginalWord.getText().toString();
 
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
                     new Response.Listener<JSONArray>() {
@@ -430,24 +470,85 @@ public class DisplayActivity extends AppCompatActivity {
                             try {
                                 JSONObject recordResponse = (JSONObject) response.get(0);
                                 int id = recordResponse.getInt("id");
-                                double sentiment = recordResponse.getDouble("sentiment");
-                                String emotion = recordResponse.getString("emotion");
-                                double accuracy = recordResponse.getDouble("accuracy");
 
-                                detail = new Detail(id, sentiment, emotion, accuracy, word.getId());
+                                requestDetail2(id);
+                            }catch(Exception e){
+                                showProgress(false);
+                                if(e.getMessage().equals("Index 0 out of range [0..0)")){
+                                    if(noResult)
+                                        noResult();
+                                    else
+                                        Toast.makeText(getApplicationContext(), "This translation has no other details.", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                    Toast.makeText(getApplicationContext(), "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            queue.add(jsonObjectRequest);
+        }
+    }
+
+    public void requestDetail2(int id){
+        if(!isConnected()) {
+            showProgress(false);
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            //String url = getString(R.string.url_selectSpecDetail);
+            String url = getString(R.string.url_selectSpecTDetail2);
+            url += "textID="+id;
+
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            try {
+                                JSONObject recordResponse = (JSONObject) response.get(0);
+                                double pleasantness = recordResponse.getDouble("pleasantness");
+                                double attention = recordResponse.getDouble("attention");
+                                double sensitivity = recordResponse.getDouble("sensitivity");
+                                double aptitude = recordResponse.getDouble("aptitude");
+                                String polarity = recordResponse.getString("value");
+                                double intensity = recordResponse.getDouble("intensity");
 
                                 //setting into their respective fields
+                                textViewPleasantness.setText(String.format(Locale.getDefault(),"%.4f",pleasantness));
+                                textViewAttention.setText(String.format(Locale.getDefault(),"%.4f",attention));
+                                textViewSensitivity.setText(String.format(Locale.getDefault(),"%.4f",sensitivity));
+                                textViewAptitude.setText(String.format(Locale.getDefault(),"%.4f",aptitude));
+
                                 //seekBar
-                                seekBarCurrent = (int)(sentiment*20000);
+                                if(polarity.equals("positive")) {
+                                    textViewNegative.setTypeface(null, Typeface.NORMAL);
+                                    textViewPositive.setTypeface(null, Typeface.BOLD);
+                                }
+                                else if (polarity.equals("negative")){
+                                    textViewNegative.setTypeface(null, Typeface.BOLD);
+                                    textViewPositive.setTypeface(null, Typeface.NORMAL);
+                                }
+                                seekBarCurrent = (int)((intensity+1.0000)*(R.integer.seekBarMax/2));
                                 seekBarSentiment.setProgress(seekBarCurrent);
-                                sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
-                                textViewSentiment.setText(""+String.format("%.4f",sentimentStrength));
+                                textViewSentiment.setText(String.format(Locale.getDefault(),"%.4f",intensity));
 
                                 //emotion
-                                //ToDo: setting emotion?
+                                //ToDo: setting emotion(moodTags)
 
+                                //ToDo: getting value from db
                                 //ratingBar
-                                ratingBarAccuracy.setRating((float)accuracy);
+                                ratingBarAccuracy.setRating((float)2.5);
+
+                                if(noResult)
+                                    Toast.makeText(getApplicationContext(), "This word has no translation record.", Toast.LENGTH_LONG).show();
 
                                 showProgress(false);
                             }catch(Exception e){

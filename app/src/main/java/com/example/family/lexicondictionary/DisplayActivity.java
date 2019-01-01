@@ -543,7 +543,7 @@ public class DisplayActivity extends AppCompatActivity {
                                 //emotion
                                 //ToDo: setting emotion(moodTags)
 
-                                //ToDo: getting value from db
+                                //ToDo: getting value from database
                                 //ratingBar
                                 ratingBarAccuracy.setRating((float)2.5);
 

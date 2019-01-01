@@ -46,6 +46,7 @@
     <string name="text_attention">Attention</string>
     <string name="text_sensitivity">Sensitivity</string>
     <string name="text_aptitude">Aptitude</string>
+    <string name="text_email">Email</string>
 
     <!-- Button texts -->
     <string name="button_add">Add</string>

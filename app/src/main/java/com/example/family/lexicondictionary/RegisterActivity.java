@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +36,7 @@ import static com.example.family.lexicondictionary.LoginActivity.userIDKey;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText editTextUsername, editTextPassword;
+    EditText editTextUsername, editTextPassword, editTextEmail;
     Button buttonSignUp;
     View mProgressView;
     View mRegisterFormView;
@@ -51,11 +52,21 @@ public class RegisterActivity extends AppCompatActivity {
         buttonSignUp = findViewById(R.id.buttonSignUp);
         mProgressView = findViewById(R.id.register_progress);
         mRegisterFormView = findViewById(R.id.registerForm);
+        editTextEmail = findViewById(R.id.editTextEmail);
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addUser(editTextUsername.getText().toString());
+                if(TextUtils.isEmpty(editTextEmail.getText())) {
+                    editTextEmail.setError("Empty field");
+                    editTextEmail.requestFocus();
+                }else if(TextUtils.isEmpty(editTextUsername.getText())){
+                    editTextUsername.setError("Empty field");
+                    editTextUsername.requestFocus();
+                }else {
+                    showProgress(true);
+                    addUser(editTextUsername.getText().toString());
+                }
             }
         });
 
@@ -117,10 +128,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 if (e.getMessage().equals("Index 0 out of range [0..0)")) {
                                     //username available
                                     //insertUser(username, editTextPassword.getText().toString());
-                                    //ToDo: Add email
                                     makeServiceCallAddUser(getApplicationContext(),
                                             getString(R.string.url_writeUser),
-                                            username, editTextPassword.getText().toString());
+                                            username, editTextPassword.getText().toString(), editTextEmail.getText().toString());
                                     showProgress(false);
                                 } else
                                     Toast.makeText(getApplicationContext(), "Error 1:" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -137,7 +147,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void makeServiceCallAddUser(Context context, String url, final String username, final String password) {
+    public void makeServiceCallAddUser(Context context, String url, final String username, final String password, final String email) {
         //mPostCommentResponse.requestStarted();
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -164,6 +174,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Map<String, String> params = new HashMap<>();
                     params.put("username", username);
                     params.put("password", password);
+                    params.put("email", email);
 
                     return params;
                 }

@@ -117,6 +117,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 if (e.getMessage().equals("Index 0 out of range [0..0)")) {
                                     //username available
                                     //insertUser(username, editTextPassword.getText().toString());
+                                    //ToDo: Add email
                                     makeServiceCallAddUser(getApplicationContext(),
                                             getString(R.string.url_writeUser),
                                             username, editTextPassword.getText().toString());

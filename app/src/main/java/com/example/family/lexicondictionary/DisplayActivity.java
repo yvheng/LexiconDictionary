@@ -428,7 +428,7 @@ public class DisplayActivity extends AppCompatActivity {
 
                                 //set audio to play
                                 //File file = new File(Environment.getExternalStorageDirectory() + "/pronunciation.wav");
-                                requestDetail();
+                                //requestDetail();
                             }catch(Exception e){
                                 showProgress(false);
                                 if(e.getMessage().equals("Index 0 out of range [0..0)")) {

@@ -1,5 +1,7 @@
 package com.example.family.lexicondictionary;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +50,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class DisplayActivity extends AppCompatActivity {
     int seekBarCurrent = 10000;
     boolean noResult=false;
     double sentimentStrength=0;
+    String zeroValue = "0.0000";
     final static String addStatus= "ADD_STATUS";
     final static String editStatus= "EDIT_STATUS";
     final static String originalWordKey= "ORIGINAL_WORD";
@@ -87,6 +89,7 @@ public class DisplayActivity extends AppCompatActivity {
     Button validateButton;
     EditText editTextOriginalWord;
     TextView textViewTranslatedWord, textViewSentiment, textViewPleasantness, textViewAttention, textViewSensitivity, textViewAptitude, textViewNegative, textViewPositive;
+    TextView textViewConcept1, textViewConcept2,textViewConcept3,textViewConcept4,textViewConcept5,textViewConcept6,textViewConcept7,textViewConcept8,textViewConcept9,textViewConcept10;
     SeekBar seekBarSentiment;
     ImageButton imageButtonPlayPronunciation;
     ImageView imageViewPhoto;
@@ -120,6 +123,17 @@ public class DisplayActivity extends AppCompatActivity {
         textViewNegative = findViewById(R.id.textViewNegative);
         textViewPositive = findViewById(R.id.textViewPositive);
 
+        textViewConcept1 = findViewById(R.id.textViewConcept1);
+        textViewConcept2 = findViewById(R.id.textViewConcept2);
+        textViewConcept3 = findViewById(R.id.textViewConcept3);
+        textViewConcept4 = findViewById(R.id.textViewConcept4);
+        textViewConcept5 = findViewById(R.id.textViewConcept5);
+        textViewConcept6 = findViewById(R.id.textViewConcept6);
+        textViewConcept7 = findViewById(R.id.textViewConcept7);
+        textViewConcept8 = findViewById(R.id.textViewConcept8);
+        textViewConcept9 = findViewById(R.id.textViewConcept9);
+        textViewConcept10 = findViewById(R.id.textViewConcept10);
+
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             seekBarSentiment.setMin(R.integer.seekBarMin);
@@ -128,12 +142,12 @@ public class DisplayActivity extends AppCompatActivity {
         seekBarCurrent = R.integer.seekBarMax/2;
         sentimentStrength = ((double)seekBarCurrent/1065680896.0)-1;
         //sentimentStrength = seekBarCurrent;
-        textViewSentiment.setText(String.format("%.4f",sentimentStrength));
+        textViewSentiment.setText(String.format(Locale.getDefault(),"%.4f",sentimentStrength));
 
-        textViewPleasantness.setText("0.0000");
-        textViewAttention.setText("0.0000");
-        textViewSensitivity.setText("0.0000");
-        textViewAptitude.setText("0.0000");
+        textViewPleasantness.setText(zeroValue);
+        textViewAttention.setText(zeroValue);
+        textViewSensitivity.setText(zeroValue);
+        textViewAptitude.setText(zeroValue);
 
         //Disable input from user
         seekBarSentiment.setOnTouchListener(new View.OnTouchListener() {
@@ -192,11 +206,11 @@ public class DisplayActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 textViewTranslatedWord.setText("");
                 imageViewPhoto.setImageResource(R.mipmap.no_photo);
-                textViewSentiment.setText("0.0000");
-                textViewPleasantness.setText("0.0000");
-                textViewAttention.setText("0.0000");
-                textViewSensitivity.setText("0.0000");
-                textViewAptitude.setText("0.0000");
+                textViewSentiment.setText(zeroValue);
+                textViewPleasantness.setText(zeroValue);
+                textViewAttention.setText(zeroValue);
+                textViewSensitivity.setText(zeroValue);
+                textViewAptitude.setText(zeroValue);
                 seekBarSentiment.setProgress(R.integer.seekBarMax/2);
                 textViewPositive.setTypeface(null, Typeface.NORMAL);
                 textViewNegative.setTypeface(null, Typeface.NORMAL);
@@ -256,9 +270,9 @@ public class DisplayActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        /*int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        displayForm.setVisibility(show ? View.GONE : View.VISIBLE);
+        /*displayForm.setVisibility(show ? View.GONE : View.VISIBLE);
         displayForm.animate().setDuration(shortAnimTime).alpha(
                 show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
             @Override

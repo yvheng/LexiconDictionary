@@ -33,7 +33,7 @@
     <string name="text_rating">Accuracy Rating</string>
     <string name="text_newTranslate">New Translation</string>
     <string name="text_history">History</string>
-    <string name="text_emotion">Emotion</string>
+    <string name="text_moodtags">Mood Tags</string>
     <string name="text_test">Testing</string>
     <string name="text_validate">Validate</string>
     <string name="text_noResult">No Result</string>
@@ -85,4 +85,5 @@
     <string name="url_writeAttachmentG">http://i2hub.tarc.edu.my:8117/writeAttachmentG.php?</string>
     <string name="url_writeUser">http://i2hub.tarc.edu.my:8117/writeUser.php?</string>
     <string name="url_writeWord">http://i2hub.tarc.edu.my:8117/writeWord.php?</string>
+    <string name="text_semantic">Semantics</string>
 </resources>

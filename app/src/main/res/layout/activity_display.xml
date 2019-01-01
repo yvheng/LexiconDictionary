@@ -134,6 +134,157 @@
                     android:id="@+id/textView1"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
+                    android:text="@string/text_semantic"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:alignmentMode="alignBounds"
+                    android:columnCount="4"
+                    android:rowCount="3"
+                    android:orientation="horizontal"
+                    android:rowOrderPreserved="false"
+                    android:useDefaultMargins="true">
+
+                    <TextView
+                        android:id="@+id/textViewConcept1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_column="0"
+                        android:layout_row="0"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"/>
+
+                    <TextView
+                        android:id="@+id/textViewConcept2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_column="1"
+                        android:layout_row="0"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="0"
+                        android:layout_rowWeight="1"
+                        android:layout_column="2"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept4"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="0"
+                        android:layout_rowWeight="1"
+                        android:layout_column="3"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept5"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="0"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept6"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="1"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept7"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="2"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept8"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="3"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept9"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="2"
+                        android:layout_rowWeight="1"
+                        android:layout_column="1"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/textViewConcept10"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_row="2"
+                        android:layout_rowWeight="1"
+                        android:layout_column="2"
+                        android:layout_columnWeight="1"
+                        android:layout_gravity="fill_horizontal"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black" />
+                </GridLayout>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
                     android:text="@string/text_sentiment"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
@@ -329,28 +480,6 @@
 
                 </GridLayout>
 
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:gravity="center"
-                    android:text="@string/text_rating"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    style="?android:attr/ratingBarStyleIndicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:isIndicator="true"
-                    android:layout_gravity="center_horizontal"
-                    android:numStars="@integer/ratingStarsNum"
-                    android:padding="3dp"
-                    android:rating="2.5"
-                    android:stepSize="0.5" />
-
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="25dp" />
@@ -360,9 +489,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:gravity="center"
-                    android:text="@string/text_emotion"
+                    android:text="@string/text_moodtags"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -370,6 +500,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp" />
 
                 <TextView
                     android:id="@+id/textView11"
@@ -415,6 +549,32 @@
                     android:contentDescription="@string/contentDesc_relatedPhoto"
                     android:scaleType="fitCenter"
                     app:srcCompat="@mipmap/no_photo" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="@string/text_rating"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:isIndicator="true"
+                    android:numStars="@integer/ratingStarsNum"
+                    android:padding="3dp"
+                    android:rating="2.5"
+                    android:stepSize="0.5" />
             </LinearLayout>
         </ScrollView>
 

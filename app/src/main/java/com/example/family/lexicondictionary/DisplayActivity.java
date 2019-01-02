@@ -19,6 +19,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.MotionEvent;
@@ -59,6 +60,13 @@ import java.util.TimerTask;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
+    String[] moodtags = {
+            "ecstasy",      "vigilance",    "rage",         "admiration",
+            "joy",          "anticipation", "anger",        "trust",
+            "serenity",     "interest",     "annoyance",    "acceptance",
+            "pensiveness",  "distraction",  "apprehension", "boredom",
+            "sadness",      "surprise",     "fear",         "disgust",
+            "grief",        "amazement",    "terror",       "loathing"};
     List<String> historyWordID = new ArrayList<String>();
     List<String> historyOriginalWord = new ArrayList<String>();
     List<String> historyTranslatedWord = new ArrayList<String>();
@@ -81,7 +89,6 @@ public class DisplayActivity extends AppCompatActivity {
     Word word;
     String wordUrl;
     Attachment attachment;
-    Detail detail;
     SharedPreferences pref;
 
     Spinner translateFromList, translateToList;
@@ -89,7 +96,7 @@ public class DisplayActivity extends AppCompatActivity {
     Button validateButton;
     EditText editTextOriginalWord;
     TextView textViewTranslatedWord, textViewSentiment, textViewPleasantness, textViewAttention, textViewSensitivity, textViewAptitude, textViewNegative, textViewPositive;
-    TextView textViewConcept1, textViewConcept2,textViewConcept3,textViewConcept4,textViewConcept5,textViewConcept6,textViewConcept7,textViewConcept8,textViewConcept9,textViewConcept10;
+    TextView textViewConcept1, textViewConcept2,textViewConcept3,textViewConcept4,textViewConcept5;
     SeekBar seekBarSentiment;
     ImageButton imageButtonPlayPronunciation;
     ImageView imageViewPhoto;
@@ -128,11 +135,6 @@ public class DisplayActivity extends AppCompatActivity {
         textViewConcept3 = findViewById(R.id.textViewConcept3);
         textViewConcept4 = findViewById(R.id.textViewConcept4);
         textViewConcept5 = findViewById(R.id.textViewConcept5);
-        textViewConcept6 = findViewById(R.id.textViewConcept6);
-        textViewConcept7 = findViewById(R.id.textViewConcept7);
-        textViewConcept8 = findViewById(R.id.textViewConcept8);
-        textViewConcept9 = findViewById(R.id.textViewConcept9);
-        textViewConcept10 = findViewById(R.id.textViewConcept10);
 
         seekBarSentiment.setMax(R.integer.seekBarMax);
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -198,8 +200,7 @@ public class DisplayActivity extends AppCompatActivity {
         //Setting layoutManager and divider to recyclerView
         mRecyclerView.setLayoutManager(layoutManager);
         //mRecyclerView.addItemDecoration(dividerItemDecoration);
-        loadEmotion();
-        mRecyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), emotion, emoticon));
+        loadEmotion("","");
 
         editTextOriginalWord.addTextChangedListener(new TextWatcher() {
             @Override
@@ -291,16 +292,121 @@ public class DisplayActivity extends AppCompatActivity {
         });*/
     }
 
-    private void loadEmotion(){
+    private void loadEmotion(String concept1, String concept2){
         emotion.clear();
         emoticon.clear();
-
-        emotion.add("Happy");
-        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.happy));
-        emotion.add("Sad");
-        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.sad));
-        emotion.add("Smile");
-        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.smile));
+        boolean concept1Found=false, concept2Found=false;
+        //ToDo: Change algo to make more efficient using similar code below:
+        //emoticon.add(BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(moodtags[i], null, getPackageName())));
+        if(!(concept1.equals("")||concept2.equals(""))) {
+            for (int i = 0; i < moodtags.length; i++) {
+                if (concept1.equals(moodtags[i])&& !concept1Found) {
+                    emotion.add(moodtags[i]);
+                    concept1Found=true;
+                    if(i==0)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.ecstasy));
+                    else if(i==1)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.vigilance));
+                    else if(i==2)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.rage));
+                    else if(i==3)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.admiration));
+                    else if(i==4)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.joy));
+                    else if(i==5)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.anticipation));
+                    else if(i==6)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.anger));
+                    else if(i==7)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.trust));
+                    else if(i==8)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.serenity));
+                    else if(i==9)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.interest));
+                    else if(i==10)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.annoyance));
+                    else if(i==11)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.acceptance));
+                    else if(i==12)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.pensiveness));
+                    else if(i==13)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.distraction));
+                    else if(i==14)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.apprehension));
+                    else if(i==15)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.boredom));
+                    else if(i==16)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.sadness));
+                    else if(i==17)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.surprise));
+                    else if(i==18)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.fear));
+                    else if(i==19)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.disgust));
+                    else if(i==20)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.grief));
+                    else if(i==21)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.amazement));
+                    else if(i==22)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.terror));
+                    else if(i==23)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.loathing));
+                }//end inner if
+                if (concept2.equals(moodtags[i])&&!concept2Found) {
+                    emotion.add(moodtags[i]);
+                    concept2Found=true;
+                    if(i==0)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.ecstasy));
+                    else if(i==1)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.vigilance));
+                    else if(i==2)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.rage));
+                    else if(i==3)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.admiration));
+                    else if(i==4)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.joy));
+                    else if(i==5)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.anticipation));
+                    else if(i==6)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.anger));
+                    else if(i==7)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.trust));
+                    else if(i==8)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.serenity));
+                    else if(i==9)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.interest));
+                    else if(i==10)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.annoyance));
+                    else if(i==11)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.acceptance));
+                    else if(i==12)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.pensiveness));
+                    else if(i==13)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.distraction));
+                    else if(i==14)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.apprehension));
+                    else if(i==15)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.boredom));
+                    else if(i==16)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.sadness));
+                    else if(i==17)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.surprise));
+                    else if(i==18)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.fear));
+                    else if(i==19)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.disgust));
+                    else if(i==20)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.grief));
+                    else if(i==21)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.amazement));
+                    else if(i==22)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.terror));
+                    else if(i==23)
+                        emoticon.add(BitmapFactory.decodeResource(getResources(), R.mipmap.loathing));
+                }//end inner if
+            }//end forLoop
+        }//end if
+        mRecyclerView.setAdapter(new RecyclerViewAdapter(getApplicationContext(), emotion, emoticon));
     }
 
     private boolean isConnected() {
@@ -535,11 +641,28 @@ public class DisplayActivity extends AppCompatActivity {
                                 String polarity = recordResponse.getString("value");
                                 double intensity = recordResponse.getDouble("intensity");
 
+                                String sconcept1 = recordResponse.getString("sconcept1");
+                                String sconcept2 = recordResponse.getString("sconcept2");
+                                String concept3 = recordResponse.getString("concept3");
+                                String concept4 = recordResponse.getString("concept4");
+                                String concept5 = recordResponse.getString("concept5");
+
+                                String mconcept1 = recordResponse.getString("mconcept1");
+                                String mconcept2 = recordResponse.getString("mconcept2");
+
                                 //setting into their respective fields
                                 textViewPleasantness.setText(String.format(Locale.getDefault(),"%.4f",pleasantness));
                                 textViewAttention.setText(String.format(Locale.getDefault(),"%.4f",attention));
                                 textViewSensitivity.setText(String.format(Locale.getDefault(),"%.4f",sensitivity));
                                 textViewAptitude.setText(String.format(Locale.getDefault(),"%.4f",aptitude));
+
+                                textViewConcept1.setText(sconcept1);
+                                textViewConcept2.setText(sconcept2);
+                                textViewConcept3.setText(concept3);
+                                textViewConcept4.setText(concept4);
+                                textViewConcept5.setText(concept5);
+
+                                loadEmotion(mconcept1, mconcept2);
 
                                 //seekBar
                                 if(polarity.equals("positive")) {

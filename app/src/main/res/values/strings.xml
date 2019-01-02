@@ -75,6 +75,7 @@
 
     <!-- Strings related to url -->
     <string name="url_checkUser">http://i2hub.tarc.edu.my:8117/checkUser.php?</string>
+    <string name="url_selectHistory">http://i2hub.tarc.edu.my:8117/selectHistory.php?</string>
     <string name="url_selectSpecImage">http://i2hub.tarc.edu.my:8117/selectSpecImage.php?</string>
     <string name="url_selectSpecDetail">http://i2hub.tarc.edu.my:8117/selectSpecDetail.php?</string>
     <string name="url_selectSpecTDetail">http://i2hub.tarc.edu.my:8117/selectSpecTDetail.php?</string>
@@ -82,8 +83,11 @@
     <string name="url_selectSpecUser">http://i2hub.tarc.edu.my:8117/selectSpecUser.php?</string>
     <string name="url_selectSpecWord">http://i2hub.tarc.edu.my:8117/selectSpecWord.php?</string>
     <string name="url_writeAttachment">http://i2hub.tarc.edu.my:8117/writeAttachment.php?</string>
+    <string name="url_updateAttachment">http://i2hub.tarc.edu.my:8117/updateAttachment.php?</string>
     <string name="url_writeAttachmentG">http://i2hub.tarc.edu.my:8117/writeAttachmentG.php?</string>
     <string name="url_writeUser">http://i2hub.tarc.edu.my:8117/writeUser.php?</string>
     <string name="url_writeWord">http://i2hub.tarc.edu.my:8117/writeWord.php?</string>
+    <string name="url_updateWord">http://i2hub.tarc.edu.my:8117/updateWord.php?</string>
+    <string name="url_writeHistory">http://i2hub.tarc.edu.my:8117/writeHistory.php?</string>
     <string name="text_semantic">Semantics</string>
 </resources>

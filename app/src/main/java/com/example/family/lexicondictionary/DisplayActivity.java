@@ -14,6 +14,9 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,10 +39,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.family.lexicondictionary.Adapter.RecyclerViewAdapter;
 import com.example.family.lexicondictionary.Model.Attachment;
@@ -53,10 +59,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.example.family.lexicondictionary.LoginActivity.MY_PREFS_NAME;
+import static com.example.family.lexicondictionary.MainActivity.userIDKey;
 
 public class DisplayActivity extends AppCompatActivity {
     String[] languages = {"English", "Malay", "Mandarin"}; //for develop purpose only
@@ -86,7 +97,7 @@ public class DisplayActivity extends AppCompatActivity {
     //List<String> emotionNameList;
     //ImageData[] emotionList;
     //List<Word> wordList;
-    Word word;
+    Word word = new Word();
     String wordUrl;
     Attachment attachment;
     SharedPreferences pref;
@@ -228,7 +239,7 @@ public class DisplayActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 timer.cancel();
                 timer = new Timer();
-                try {
+                /*try {
                     timer.schedule(
                             new TimerTask() {
                                 @Override
@@ -240,6 +251,37 @@ public class DisplayActivity extends AppCompatActivity {
                                         translate();
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Original word is empty.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            },
+                            DELAY
+                    );
+                }catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }*/
+                try {
+                    timer.schedule(
+                            new TimerTask() {
+                                private Handler updateUI = new Handler(){
+                                    @Override
+                                    public void dispatchMessage(Message msg) {
+                                        super.dispatchMessage(msg);
+
+                                        if (!(editTextOriginalWord.getText() == null ||
+                                                editTextOriginalWord.getText().toString().equals("") ||
+                                                editTextOriginalWord.getText().toString().equals(" "))) {
+                                            translate();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Original word is empty.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                };
+                                @Override
+                                public void run() {
+                                    try{
+                                        updateUI.sendEmptyMessage(0);
+                                    }catch(Exception e){
+                                        e.printStackTrace();
                                     }
                                 }
                             },
@@ -486,6 +528,7 @@ public class DisplayActivity extends AppCompatActivity {
                                 }catch(ArrayIndexOutOfBoundsException e){
                                     Toast.makeText(getApplicationContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }*/
+                                writeHistory(getApplicationContext(), getString(R.string.url_writeHistory));
                                 requestImage();
                             } catch (NullPointerException e) {
                                 showProgress(false);
@@ -513,6 +556,51 @@ public class DisplayActivity extends AppCompatActivity {
                         }
                     });
             queue.add(jsonObjectRequest);
+        }
+    }
+
+    private void writeHistory(Context context, String url) {
+        //mPostCommentResponse.requestStarted();
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        //Send data
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("original", word.getOriginalContent());
+                    params.put("translation", word.getTranslatedContent());
+                    pref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+                    params.put("userID", String.valueOf(pref.getInt(userIDKey, 0)));
+
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -634,6 +722,8 @@ public class DisplayActivity extends AppCompatActivity {
                         public void onResponse(JSONArray response) {
                             try {
                                 JSONObject recordResponse = (JSONObject) response.get(0);
+                                word.setStatus("None");
+
                                 double pleasantness = recordResponse.getDouble("pleasantness");
                                 double attention = recordResponse.getDouble("attention");
                                 double sensitivity = recordResponse.getDouble("sensitivity");
@@ -684,8 +774,10 @@ public class DisplayActivity extends AppCompatActivity {
                                 //ratingBar
                                 ratingBarAccuracy.setRating((float)2.5);
 
-                                if(noResult)
+                                if(noResult) {
+                                    noResult();
                                     Toast.makeText(getApplicationContext(), "This word has no translation record.", Toast.LENGTH_LONG).show();
+                                }
 
                                 showProgress(false);
                             }catch(Exception e){
@@ -720,9 +812,7 @@ public class DisplayActivity extends AppCompatActivity {
         //Check if the required field is empty
         if(!(editTextOriginalWord.getText()==null||
                 editTextOriginalWord.getText().toString().equals("")||
-                editTextOriginalWord.getText().toString().equals(" ")||
-                textViewTranslatedWord.getText()==null||
-                textViewTranslatedWord.getText().toString().equals(""))){
+                editTextOriginalWord.getText().toString().equals(" "))){
             //Check if this record is provided by user and not from original database
             if(!word.getStatus().equals("default")) {
                 Intent intent = new Intent(this, AddActivity.class);
@@ -735,6 +825,7 @@ public class DisplayActivity extends AppCompatActivity {
                 //ToDo: put emotion, sentiment
                 startActivity(intent);
             }else{
+                //default word added by loading word into db (admin)
                 Toast.makeText(getApplicationContext(), "Unable to edit default word.", Toast.LENGTH_SHORT).show();
             }
         }else{
@@ -753,7 +844,7 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     private void noResult(){
-        Toast.makeText(getApplicationContext(),"No result found.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"No translation found.",Toast.LENGTH_SHORT).show();
         String originalWord = editTextOriginalWord.getText().toString();
         String translateFrom = translateFromList.getSelectedItem().toString();
         String translateTo = translateToList.getSelectedItem().toString();

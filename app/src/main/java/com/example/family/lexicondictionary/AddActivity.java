@@ -120,6 +120,8 @@ public class AddActivity extends AppCompatActivity {
 
         showProgress(false);
 
+        final String status = extras.getString("STATUS");
+
         FloatingActionButton fab = findViewById(R.id.saveFab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +137,14 @@ public class AddActivity extends AppCompatActivity {
                         String url = getString(R.string.url_writeWord);
                         word.setTranslatedContent(editTextTranslatedWord.getText().toString());
 
-                        makeServiceCallAddWord(getApplicationContext(), url, word);
+                        try {
+                            if (status.equals(addStatus))
+                                makeServiceCallAddWord(getApplicationContext(), url, word);
+                            else if (status.equals(editStatus))
+                                updateWord(getApplicationContext(), getString(R.string.url_updateWord), word);
+                        }catch(Exception e){
+
+                        }
                     }else{
                         Toast.makeText(getApplicationContext(), "Required field is empty.", Toast.LENGTH_SHORT).show();
                     }
@@ -164,7 +173,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        String status = extras.getString("STATUS");
         try {
             if (status.equals(addStatus)) {
                 textViewTitle.setText(R.string.title_addNewEntry);
@@ -174,8 +182,6 @@ public class AddActivity extends AppCompatActivity {
                 textViewTitle.setText(R.string.title_editEntry);
                 editTextOriginal.setEnabled(true);
             }
-        }catch(NullPointerException e){
-
         }catch(Exception e){
 
         }
@@ -338,6 +344,115 @@ public class AddActivity extends AppCompatActivity {
                     return params;
                 }
             };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateWord(Context context, String url, final Word word) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            if(attachment.getPhoto()==null&&
+                                    attachment.getPronunciation()==null){//if one of/both photo and pronunciation chose
+                                showProgress(false);
+                                Intent returnIntent = new Intent();
+                                setResult(Activity.RESULT_OK, returnIntent);
+                                finish();
+                            }else {
+                                //retrieve wordID of the word added just now
+                                checkWord();
+                                //add attachment set to the word
+                                updateAttachment(getApplicationContext(),
+                                        getString(R.string.url_updateAttachment),
+                                        attachment);
+                                //makeServiceCallAddAttachment()G;
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("id", String.valueOf(word.getId()));
+                    params.put("originalContent", word.getOriginalContent());
+                    params.put("translatedContent", word.getTranslatedContent());
+                    params.put("userID", String.valueOf(word.getUserID()));
+
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            queue.add(postRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateAttachment(Context context, String url, final Attachment attachment){
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        try {
+            StringRequest postRequest = new StringRequest(
+                    Request.Method.POST,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            showProgress(false);
+                            Intent returnIntent = new Intent();
+                            setResult(Activity.RESULT_OK, returnIntent);
+                            finish();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(), "Error :" + error.toString(), Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("wordID", String.valueOf(attachment.getWordID()));
+                    //if (!(attachment.getPhoto().equals("")))
+                    params.put("photo", attachment.getPhoto());
+                    //if (!(attachment.getPronunciation().equals("")))
+                    params.put("pronunciation", attachment.getPronunciation());
+
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+            postRequest.setShouldCache(false);
             queue.add(postRequest);
         } catch (Exception e) {
             e.printStackTrace();

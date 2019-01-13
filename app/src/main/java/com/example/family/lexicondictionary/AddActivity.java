@@ -45,6 +45,7 @@ import com.example.family.lexicondictionary.Model.Attachment;
 import com.example.family.lexicondictionary.Model.Word;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -81,9 +82,7 @@ public class AddActivity extends AppCompatActivity {
     Button buttonGallery, buttonVoice;
     String wordUrl;
     SeekBar seekBarSentiment;
-
-    int seekBarCurrent = 10000;
-    double sentimentStrength=0;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +122,10 @@ public class AddActivity extends AppCompatActivity {
         final String status = extras.getString("STATUS");
 
         FloatingActionButton fab = findViewById(R.id.saveFab);
+
+        if(word.getId()==0)
+            checkWord();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,8 +143,9 @@ public class AddActivity extends AppCompatActivity {
                         try {
                             if (status.equals(addStatus))
                                 makeServiceCallAddWord(getApplicationContext(), url, word);
-                            else if (status.equals(editStatus))
-                                updateWord(getApplicationContext(), getString(R.string.url_updateWord), word);
+                            else if (status.equals(editStatus)) {
+                                updateWord(getApplicationContext(), word);
+                            }
                         }catch(Exception e){
 
                         }
@@ -350,8 +354,15 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    public void updateWord(Context context, String url, final Word word) {
+    public void updateWord2(Context context, final Word word) {
         RequestQueue queue = Volley.newRequestQueue(context);
+
+        String url = getString(R.string.url_updateWord);
+       /*url += "id="+word.getId();
+        url += "&originalContent="+word.getOriginalContent();
+        url += "&translatedContent="+word.getTranslatedContent();*/
+        pref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        //url += "&userID="+String.valueOf(pref.getInt(userIDKey, 0));
 
         try {
             StringRequest postRequest = new StringRequest(
@@ -360,15 +371,17 @@ public class AddActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            if(attachment.getPhoto()==null&&
-                                    attachment.getPronunciation()==null){//if one of/both photo and pronunciation chose
+                            if (attachment.getPhoto() == null &&
+                                    attachment.getPronunciation() == null &&
+                                    attachment.getPhoto().equals("") &&
+                                    attachment.getPronunciation().equals("") &&
+                                    attachment.getPhoto().equals(" ") &&
+                                    attachment.getPronunciation().equals(" ")) {//if one both photo and pronunciation not chose
                                 showProgress(false);
                                 Intent returnIntent = new Intent();
                                 setResult(Activity.RESULT_OK, returnIntent);
                                 finish();
-                            }else {
-                                //retrieve wordID of the word added just now
-                                checkWord();
+                            } else {
                                 //add attachment set to the word
                                 updateAttachment(getApplicationContext(),
                                         getString(R.string.url_updateAttachment),
@@ -391,7 +404,7 @@ public class AddActivity extends AppCompatActivity {
                     params.put("id", String.valueOf(word.getId()));
                     params.put("originalContent", word.getOriginalContent());
                     params.put("translatedContent", word.getTranslatedContent());
-                    params.put("userID", String.valueOf(word.getUserID()));
+                    params.put("userID", String.valueOf(pref.getInt(userIDKey, 0)));
 
                     return params;
                 }
@@ -406,6 +419,49 @@ public class AddActivity extends AppCompatActivity {
             queue.add(postRequest);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updateWord(Context context, final Word word){
+        if(!isConnected())
+            Toast.makeText(getApplicationContext(), "No internet connection.", Toast.LENGTH_SHORT).show();
+        else{
+            RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+            String url = getString(R.string.url_updateWord);
+            url += "id="+word.getId();
+            url += "&originalContent="+word.getOriginalContent();
+            url += "&translatedContent="+word.getTranslatedContent();
+            pref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+            url += "&userID="+String.valueOf(pref.getInt(userIDKey, 0));
+
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(url,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray response) {
+                            if (attachment.getPhoto().equals("") &&
+                                    attachment.getPronunciation().equals("")) {//if one both photo and pronunciation not chose
+                                showProgress(false);
+                                Intent returnIntent = new Intent();
+                                setResult(Activity.RESULT_OK, returnIntent);
+                                finish();
+                            } else {
+                                //add attachment set to the word
+                                updateAttachment(getApplicationContext(),
+                                        getString(R.string.url_updateAttachment),
+                                        attachment);
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(), "Volley Error:" + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                            onBackPressed();
+                        }
+                    });
+            queue.add(jsonObjectRequest);
         }
     }
 
@@ -486,6 +542,7 @@ public class AddActivity extends AppCompatActivity {
                                 int userID = Integer.parseInt(recordResponse.getString("userID"));
                                 int lastEditUserID = Integer.parseInt(recordResponse.getString("lastEditUserID"));*/
 
+                                word.setId(id);
                                 attachment.setWordID(id);
                             } catch (NullPointerException e) {
                                 Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();

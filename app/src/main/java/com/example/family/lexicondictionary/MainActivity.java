@@ -125,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONArray response) {
                             try {
-                                for(int i=0; i<response.length(); i++) {
+                                //for(int i=0; i<response.length(); i++) {
+                                int count=15;
+                                for(int i=response.length()-1; i>0; i--) {
                                     JSONObject recordResponse = (JSONObject) response.get(i);
                                     String original = recordResponse.getString("original");
                                     String translation = recordResponse.getString("translation");
@@ -134,6 +136,10 @@ public class MainActivity extends AppCompatActivity {
                                                 null, null, null,
                                                 null, 0, 0); //ToDo: Add more details in history list
                                     historyList.add(historyWord);
+
+                                    count--;
+                                    if(count==0)
+                                        break;
                                 }
                                 historyListAdapter = new HistoryListAdapter(getApplicationContext(),R.layout.history_list, historyList);
                                 listView.setAdapter(historyListAdapter);

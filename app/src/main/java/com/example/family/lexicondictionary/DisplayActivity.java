@@ -1,8 +1,7 @@
 package com.example.family.lexicondictionary;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,14 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.MotionEvent;
@@ -49,7 +46,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.family.lexicondictionary.Adapter.RecyclerViewAdapter;
 import com.example.family.lexicondictionary.Model.Attachment;
-import com.example.family.lexicondictionary.Model.Detail;
 import com.example.family.lexicondictionary.Model.Word;
 
 import org.json.JSONArray;
@@ -78,11 +74,10 @@ public class DisplayActivity extends AppCompatActivity {
             "pensiveness",  "distraction",  "apprehension", "boredom",
             "sadness",      "surprise",     "fear",         "disgust",
             "grief",        "amazement",    "terror",       "loathing"};
-    List<String> historyWordID = new ArrayList<String>();
-    List<String> historyOriginalWord = new ArrayList<String>();
-    List<String> historyTranslatedWord = new ArrayList<String>();
-    List<String> emotion = new ArrayList<String>();
-    List<Bitmap> emoticon = new ArrayList<Bitmap>();
+    List<String> historyOriginalWord = new ArrayList<>();
+    List<String> historyTranslatedWord = new ArrayList<>();
+    List<String> emotion = new ArrayList<>();
+    List<Bitmap> emoticon = new ArrayList<>();
     int seekBarCurrent = 10000;
     boolean noResult=false;
     double sentimentStrength=0;
@@ -94,9 +89,6 @@ public class DisplayActivity extends AppCompatActivity {
     final static String translatedFromKey= "TRANSLATED_FROM";
     final static String translatedToKey= "TRANSLATED_TO";
     final static String prefName= "PRIVATE_PREF";
-    //List<String> emotionNameList;
-    //ImageData[] emotionList;
-    //List<Word> wordList;
     Word word = new Word();
     String wordUrl;
     Attachment attachment;
@@ -587,10 +579,8 @@ public class DisplayActivity extends AppCompatActivity {
                     params.put("translation", word.getTranslatedContent());
                     pref = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
                     params.put("userID", String.valueOf(pref.getInt(userIDKey, 0)));
-
                     return params;
                 }
-
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
@@ -823,13 +813,31 @@ public class DisplayActivity extends AppCompatActivity {
                 intent.putExtra(translatedFromKey, translateFromList.getSelectedItem().toString());
                 intent.putExtra(translatedToKey, translateToList.getSelectedItem().toString());
                 //ToDo: put emotion, sentiment
-                startActivity(intent);
+                startActivityForResult(intent, 2); //edit = 2
             }else{
                 //default word added by loading word into db (admin)
                 Toast.makeText(getApplicationContext(), "Unable to edit default word.", Toast.LENGTH_SHORT).show();
             }
         }else{
             Toast.makeText(getApplicationContext(), "Original text is empty.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void clearField(){
+        editTextOriginalWord.setText("");
+        textViewTranslatedWord.setText("");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==2){
+            clearField();
+            if(resultCode == Activity.RESULT_OK){
+                Toast.makeText(getApplicationContext(), "Word validated..", Toast.LENGTH_SHORT).show();
+            }
+            if(resultCode == Activity.RESULT_CANCELED){
+                Toast.makeText(getApplicationContext(), "Validation cancelled.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -862,7 +870,6 @@ public class DisplayActivity extends AppCompatActivity {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
-
     public static void getAudioString(String input){
         byte[] decoded = Base64.decode(input, Base64.DEFAULT);
         try

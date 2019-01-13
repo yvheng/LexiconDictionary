@@ -87,7 +87,7 @@
     <string name="url_writeAttachmentG">http://i2hub.tarc.edu.my:8117/writeAttachmentG.php?</string>
     <string name="url_writeUser">http://i2hub.tarc.edu.my:8117/writeUser.php?</string>
     <string name="url_writeWord">http://i2hub.tarc.edu.my:8117/writeWord.php?</string>
-    <string name="url_updateWord">http://i2hub.tarc.edu.my:8117/updateWord.php?</string>
+    <string name="url_updateWord">http://i2hub.tarc.edu.my:8117/updateWordG.php?</string>
     <string name="url_writeHistory">http://i2hub.tarc.edu.my:8117/writeHistory.php?</string>
     <string name="text_semantic">Semantics</string>
 </resources>

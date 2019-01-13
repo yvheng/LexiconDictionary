@@ -161,6 +161,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             Toast.makeText(getApplicationContext(), "New user created.", Toast.LENGTH_LONG).show();
                             finish();
+
                         }
                     },
                     new Response.ErrorListener() {

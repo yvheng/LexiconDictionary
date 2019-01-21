@@ -1,6 +1,6 @@
 <resources>
     <!-- App name -->
-    <string name="app_name">Lexicon Dictionary</string>
+    <string name="app_name">M-LANGLEX</string>
 
     <!-- Long texts -->
     <string name="txt_enterText">Tap to enter text</string>

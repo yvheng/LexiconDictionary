@@ -1,5 +1,4 @@
 package com.example.family.lexicondictionary.Model;
-
 import java.sql.Date;
 
 public class Word {

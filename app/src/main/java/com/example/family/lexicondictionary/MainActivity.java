@@ -137,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
                                                 null, 0, 0); //ToDo: Add more details in history list
                                     historyList.add(historyWord);
 
-                                    count--;
-                                    if(count==0)
-                                        break;
+                                    /*count--;
+                                    if(count==0)//ToDo: UnComment to test limit 15 lines of history
+                                        break;*/
                                 }
                                 historyListAdapter = new HistoryListAdapter(getApplicationContext(),R.layout.history_list, historyList);
                                 listView.setAdapter(historyListAdapter);
